@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/bucketFragment2">
+
+    <fragment
+        android:id="@+id/bucketFragment2"
+        android:name="com.example.taskbucket.fragments.BucketFragment"
+        android:label="fragment_bucket"
+        tools:layout="@layout/fragment_bucket" />
+    <fragment
+        android:id="@+id/calendarFragment2"
+        android:name="com.example.taskbucket.fragments.CalendarFragment"
+        android:label="fragment_calendar"
+        tools:layout="@layout/fragment_calendar" />
+    <fragment
+        android:id="@+id/projectFragment"
+        android:name="com.example.taskbucket.fragments.ProjectFragment"
+        android:label="fragment_project"
+        tools:layout="@layout/fragment_project" />
+</navigation>
