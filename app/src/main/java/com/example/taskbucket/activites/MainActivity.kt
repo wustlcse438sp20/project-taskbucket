@@ -4,7 +4,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import android.view.Menu
+import android.widget.Toolbar
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.example.databasefinal.Event
 import com.example.taskbucket.R
@@ -14,8 +18,6 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Month
-
-lateinit var mBottomNav: BottomNavigationView
 
 /**
 Divides ArrayList<Event> into 13 buckets
@@ -78,6 +80,9 @@ fun dataDividerYear(yearList: ArrayList<Int>, events: ArrayList<Event>) : ArrayL
 
 
 class MainActivity : AppCompatActivity() {
+    lateinit var mBottomNav: BottomNavigationView
+    lateinit var mDrawerLayout: DrawerLayout
+    lateinit var toolbar: androidx.appcompat.widget.Toolbar
     private var eventViewModel: EventViewModel? = null
     private var uniqueYears: ArrayList<Int> = ArrayList()
     private var currentEvents: ArrayList<Event> = ArrayList()
@@ -85,11 +90,18 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        mBottomNav = findViewById(
-            R.id.bottom_nav
-        )
+        mBottomNav = findViewById(R.id.bottom_nav)
+        mDrawerLayout = findViewById(R.id.drawer_layout)
+        toolbar = findViewById(R.id.toolbar)
         val controller = findNavController(R.id.nav_host_fragment)
         mBottomNav.setupWithNavController(controller)
+        val appBarConfiguration = AppBarConfiguration(controller.graph, mDrawerLayout)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        //supportActionBar!!.setDisplayShowHomeEnabled(true)
+
+        //setActionBar(toolbar)
         eventViewModel = ViewModelProvider(this).get(EventViewModel::class.java)
         eventViewModel!!.getYears()
         eventViewModel!!.getEventsNoBucket()
@@ -161,5 +173,10 @@ class MainActivity : AppCompatActivity() {
     fun updateEvent(id: Int, year: Int? = null, month: Month? = null, day: Int? = null,
                     week_number: Int? = null, week_day: DayOfWeek? = null) {
         eventViewModel!!.updateEvent(id, year, month?.value, day, week_number, week_day?.value)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.bucket_toolbar, menu)
+        return super.onCreateOptionsMenu(menu)
     }
 }
