@@ -12,7 +12,7 @@ import androidx.navigation.Navigation.findNavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.taskbucket.R
-import com.example.taskbucket.activites.mBottomNav
+//import com.example.taskbucket.activites.mBottomNav
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.fragment_calendar.*
 import java.util.*
