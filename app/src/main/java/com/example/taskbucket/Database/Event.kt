@@ -18,7 +18,8 @@ data class Event(
     val end: Number?,
     val description: String?,
     val week_day: DayOfWeek?,
-    val week_number: Number? // 1 for week 1 (1-7), 2 for week 2 (8-14), etc.
+    val week_number: Number?, // 1 for week 1 (1-7), 2 for week 2 (8-14), etc.
+    val project_id: Int?
 ) {
     @PrimaryKey(autoGenerate = true)
     @NonNull

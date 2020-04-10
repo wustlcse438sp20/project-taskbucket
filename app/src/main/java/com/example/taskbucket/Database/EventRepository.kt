@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.CoroutineScope
+import java.time.DayOfWeek
 import java.time.Month
 
 
@@ -16,6 +17,7 @@ class EventRepository(private val eventDao: EventDao) {
     // Observed LiveData will notify the observer when the data has changed.
     val oldEvents: LiveData<List<Event>> = MutableLiveData()
     var currentEvents: LiveData<List<Event>> = MutableLiveData()
+    var yearList: LiveData<List<Number>> = MutableLiveData()
 
     fun insert(event: Event) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -55,6 +57,12 @@ class EventRepository(private val eventDao: EventDao) {
         }
     }
 
+    fun getYears() {
+        CoroutineScope(Dispatchers.IO).launch {
+            yearList = eventDao!!.getAllYears()
+        }
+    }
+
     fun deleteOld(year: Number, day: Number, month: Month) {
         CoroutineScope(Dispatchers.IO).launch {
             eventDao!!.deleteOld(year, day, month)
@@ -79,6 +87,24 @@ class EventRepository(private val eventDao: EventDao) {
     fun deleteEventsByWeek(year : Number, month : Month, week_number : Number) {
         CoroutineScope(Dispatchers.IO).launch {
             eventDao!!.deleteEventsByWeek(year, month, week_number)
+        }
+    }
+
+    fun getEventsNoBucket() {
+        CoroutineScope(Dispatchers.IO).launch {
+            currentEvents = eventDao!!.getEventsNoBucket()
+        }
+    }
+
+    fun getEventsByProject() {
+        CoroutineScope(Dispatchers.IO).launch {
+            currentEvents = eventDao!!.getEventsByProject()
+        }
+    }
+
+    fun updateEvent(id: Number, year: Int?, month: Month?, day: Int?, week_number: Number?, week_day: DayOfWeek?) {
+        CoroutineScope(Dispatchers.IO).launch {
+            eventDao!!.updateEvent(id, year, month, day, week_number, week_day)
         }
     }
 

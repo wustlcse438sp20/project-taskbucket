@@ -7,7 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.databasefinal.Event
 import com.example.databasefinal.EventDatabase
 import com.example.databasefinal.EventRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.time.DayOfWeek
 import java.time.Month
 
 class EventViewModel(application: Application) : AndroidViewModel(application) {
@@ -16,12 +19,14 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: EventRepository
     val oldEvents: LiveData<List<Event>>
     val currentEvents: LiveData<List<Event>>
+    val yearList: LiveData<List<Number>>
 
     init {
         val eventsDao = EventDatabase.getDatabase(application).eventDao()
         repository = EventRepository(eventsDao)
         oldEvents = repository.oldEvents
         currentEvents = repository.currentEvents
+        yearList = repository.yearList
     }
     fun insert(event: Event) = viewModelScope.launch {
         repository.insert(event)
@@ -62,5 +67,21 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
     }
     fun deleteEventsByWeek(year : Number, month : Month, week_number : Number) = viewModelScope.launch {
         repository.deleteEventsByWeek(year, month, week_number)
+    }
+
+    fun getEventsNoBucket() {
+        repository.getEventsNoBucket()
+    }
+
+    fun getEventsByProject() {
+        repository.getEventsByProject()
+    }
+
+    fun updateEvent(id: Number, year: Int?, month: Month?, day: Int?, week_number: Number?, week_day: DayOfWeek?) {
+        repository.updateEvent(id, year, month, day, week_number, week_day)
+    }
+
+    fun getYears() {
+        repository.getYears()
     }
 }
