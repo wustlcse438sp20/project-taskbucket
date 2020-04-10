@@ -30,7 +30,7 @@ fun dataDividerMonth(events: ArrayList<Event>): ArrayList<ArrayList<Event>> {
     }
     for(event in events) {
         if(event.month != null) {
-            bigList[event.month.value].add(event)
+            bigList[event.month].add(event)
         } else {
             bigList[13].add(event)
         }
@@ -51,7 +51,7 @@ fun dataDividerDay(month: Month, events: ArrayList<Event>): ArrayList<ArrayList<
     }
     for(event in events) {
         if(event.day != null) {
-            bigList[event.day.toInt()].add(event)
+            bigList[event.day].add(event)
         } else {
             bigList[month.minLength()+1].add(event)
         }
@@ -65,7 +65,7 @@ fun dataDividerDay(month: Month, events: ArrayList<Event>): ArrayList<ArrayList<
     @param events list of events to divide
     @return ArrayList<ArrayList<Event>
  */
-fun dataDividerYear(yearList: ArrayList<Number>, events: ArrayList<Event>) : ArrayList<ArrayList<Event>> {
+fun dataDividerYear(yearList: ArrayList<Int>, events: ArrayList<Event>) : ArrayList<ArrayList<Event>> {
     val bigList = arrayListOf<ArrayList<Event>>()
     for(i in 1 .. yearList.size) {
         bigList[i] = arrayListOf()
@@ -79,7 +79,7 @@ fun dataDividerYear(yearList: ArrayList<Number>, events: ArrayList<Event>) : Arr
 
 class MainActivity : AppCompatActivity() {
     private var eventViewModel: EventViewModel? = null
-    private var uniqueYears: ArrayList<Number> = ArrayList()
+    private var uniqueYears: ArrayList<Int> = ArrayList()
     private var currentEvents: ArrayList<Event> = ArrayList()
     val date = LocalDateTime.now()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -91,6 +91,8 @@ class MainActivity : AppCompatActivity() {
         val controller = findNavController(R.id.nav_host_fragment)
         mBottomNav.setupWithNavController(controller)
         eventViewModel = ViewModelProvider(this).get(EventViewModel::class.java)
+        eventViewModel!!.getYears()
+        eventViewModel!!.getEventsNoBucket()
         eventViewModel!!.currentEvents.observe(this, Observer { events ->
             // Update the cached copy of the words in the adapter.
             currentEvents.clear()
@@ -103,26 +105,27 @@ class MainActivity : AppCompatActivity() {
             uniqueYears.addAll(events)
             //adapter.notifyDataSetChanged()
         })
+
     }
     fun oldEventGetter() { // automatically gets current date and calls get old on the database
-        eventViewModel!!.getOld(date.year, date.dayOfMonth, date.month)
+        eventViewModel!!.getOld(date.year, date.dayOfMonth, date.month.value)
     }
     fun oldEventModifier() { // always call getter before!
         eventViewModel!!.oldEvents // whatever you want users to be able to do
     }
     fun oldEventClear() {
-        eventViewModel!!.deleteOld(date.year, date.dayOfMonth, date.month)
+        eventViewModel!!.deleteOld(date.year, date.dayOfMonth, date.month.value)
     }
     fun insertWithOptionals(
         name: String,
         month: Month? = null,
         day: Int? = null,
         year: Int,
-        start: Number? = null,
-        end: Number? = null,
-        description: String? = null, week_number: Number? = null, project_id: Int? = null) {
+        start: Int? = null,
+        end: Int? = null,
+        description: String? = null, week_number: Int? = null, project_id: Int? = null) {
         var week_day: DayOfWeek? = null
-        var calcDay: Number? = week_number
+        var calcDay: Int? = week_number
         if(month != null && day != null) {
             val s: String = month.value.toString() + day.toString() + year.toString()
             week_day = LocalDate.parse(s).dayOfWeek
@@ -136,27 +139,27 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        eventViewModel!!.insert(Event(name, month, day, year, start, end, description, week_day,
+        eventViewModel!!.insert(Event(name, month?.value, day, year, start, end, description, week_day?.value,
             calcDay, project_id))
     }
 
-    fun yearBucket(year: Number) {
+    fun yearBucket(year: Int) {
         eventViewModel!!.getEventsByYear(year)
     }
-    fun dayBucket(year : Number, month : Month, day: Number) {
-        eventViewModel!!.getEventsByDay(year, month, day)
+    fun dayBucket(year : Int, month : Month, day: Int) {
+        eventViewModel!!.getEventsByDay(year, month.value, day)
     }
-    fun monthBucket(year : Number, month : Month) {
-        eventViewModel!!.getEventsByMonth(year, month)
+    fun monthBucket(year : Int, month : Month) {
+        eventViewModel!!.getEventsByMonth(year, month.value)
     }
-    fun weekBucket(year : Number, month : Month, week: Number) {
-        eventViewModel!!.getEventsByWeek(year, month, week)
+    fun weekBucket(year : Int, month : Month, week: Int) {
+        eventViewModel!!.getEventsByWeek(year, month.value, week)
     }
     // you can write your own based on the stuff in repository, should give you all the functionality
     // you need to pass to adapter or whatever you are using
 
-    fun updateEvent(id: Number, year: Int? = null, month: Month? = null, day: Int? = null,
-                    week_number: Number? = null, week_day: DayOfWeek? = null) {
-        eventViewModel!!.updateEvent(id, year, month, day, week_number, week_day)
+    fun updateEvent(id: Int, year: Int? = null, month: Month? = null, day: Int? = null,
+                    week_number: Int? = null, week_day: DayOfWeek? = null) {
+        eventViewModel!!.updateEvent(id, year, month?.value, day, week_number, week_day?.value)
     }
 }
