@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.WeekFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <GridLayout
+        android:id="@+id/date_header"
+        android:layout_width="340dp"
+        android:layout_height="60dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="113dp"
+            android:layout_height="match_parent"
+            android:tag="week_day_1" />
+
+        <TextView
+            android:layout_width="113dp"
+            android:layout_height="match_parent"
+            android:tag="week_day_2" />
+
+        <TextView
+            android:layout_width="113dp"
+            android:layout_height="match_parent"
+            android:tag="week_day_3" />
+
+    </GridLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/week_recycler_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@id/week_button_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/date_header" />
+
+    <LinearLayout
+        android:id="@+id/week_button_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Prev"
+            android:layout_weight=".5"
+            android:id="@+id/week_prev_button"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Next"
+            android:layout_weight=".5"
+            android:id="@+id/week_next_button"/>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
