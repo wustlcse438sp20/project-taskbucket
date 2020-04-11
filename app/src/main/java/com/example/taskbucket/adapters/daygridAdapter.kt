@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.databasefinal.Event
@@ -32,7 +33,15 @@ class daygridAdapter(items: ArrayList<daygridEvent>, activity: Activity): Recycl
         Log.d(TAG, "onBindViewHolder: " + items[position].events.size)
         holder.hour.text = items[position].hour.toString()
         holder.recyclerView.adapter = dayeventAdapter(items[position].events, activity)
-        holder.recyclerView.layoutManager = LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL, false)
+        //holder.recyclerView.layoutManager = LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL, false)
+        if(items[position].events.size == 0){
+            holder.recyclerView.layoutManager = LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL, false)
+        }else{
+            var gLayout = GridLayoutManager(activity,items[position].events.size)
+            holder.recyclerView.layoutManager = gLayout
+        }
+
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
