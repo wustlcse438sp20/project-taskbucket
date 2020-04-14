@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.databasefinal.Event
 import com.example.taskbucket.R
-import com.example.taskbucket.data.Events
+
 
 data class daygridEvent(val hour: Int, val events: ArrayList<Event>)
 
@@ -31,7 +31,7 @@ class daygridAdapter(items: ArrayList<daygridEvent>, activity: Activity): Recycl
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         Log.d(TAG, "onBindViewHolder: " + items[position].events.size)
-        holder.hour.text = items[position].hour.toString()
+        holder.hour.text = items[position].hour.toString() + ":00 "
         holder.recyclerView.adapter = dayeventAdapter(items[position].events, activity)
         //holder.recyclerView.layoutManager = LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL, false)
         if(items[position].events.size == 0){

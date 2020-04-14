@@ -12,10 +12,8 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.databasefinal.Event
 import com.example.taskbucket.R
-import com.example.taskbucket.adapter.DayAdapter
 import com.example.taskbucket.adapters.daygridAdapter
 import com.example.taskbucket.adapters.daygridEvent
-import com.example.taskbucket.data.Events
 import kotlinx.android.synthetic.main.fragment_bucket.*
 import kotlinx.android.synthetic.main.fragment_day.*
 import java.text.SimpleDateFormat
@@ -26,15 +24,9 @@ import kotlin.collections.ArrayList
  * A simple [Fragment] subclass.
  */
 
-private var event1 = Events(1, "Lunch6", "aaa", 3, 15, 3, 2020, 720, 765)
-private var event2 = Events(2, "Lunch5", "aaea", 3, 15, 3, 2020, 780, 800)
-private var event3 = Events(3, "Lunch4", "aasa", 2, 15, 3, 2020, 1200, 1245)
-private var event4 = Events(4, "Lunch3", "asaa", 3, 16, 3, 2020, 1200, 1245)
-private var event5 = Events(5, "Lunch2", "aahhha", 3, 15, 4, 2020, 1200, 1245)
 
-private var eventList: ArrayList<Events> = ArrayList()
 private var cal: Calendar = Calendar.getInstance()
-private lateinit var adapter: DayAdapter
+
 
 class DayFragment() : Fragment() {
     val TAG: String = "DayFragment"
@@ -53,8 +45,7 @@ class DayFragment() : Fragment() {
 
 
         initDay(view)
-        eventList.add(event1)
-        eventList.add(event2)
+
 
         day_prev_button.setOnClickListener {
             prevDay(view)
@@ -67,7 +58,7 @@ class DayFragment() : Fragment() {
         recyclerView_day.layoutManager = LinearLayoutManager(requireContext())
         var items = arrayListOf<daygridEvent>()
         var emptyEvents = arrayListOf<Event>()
-        //events.add(Event("test", 3, 4, 2020, 5, 8, "blahblah blash",3,13, 0))
+
         var event1 = Event("test", 3, 4, 2020, 5, 8, "blahblah blash",3,13, 0)
         var event2 = Event("test", 3, 4, 2020, 5, 8, "blahblah blash",3,13, 0)
         var event3 = Event("test", 3, 4, 2020, 5, 8, "blahblah blash",3,13, 0)
@@ -148,7 +139,7 @@ class DayFragment() : Fragment() {
 
 
     fun clearEvents(view:View){
-        eventList.clear()
+
         //val chart = view.findViewById<RelativeLayout>(R.id.day_table)
         //chart.removeAllViews()
     }
