@@ -17,6 +17,10 @@ class dayeventAdapter(items: ArrayList<Event>, activity: Activity): RecyclerView
     var activity = activity
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
         val textView: TextView = view.findViewById(R.id.textView6)
+        val view = view
+        fun expandView(){
+            textView.layoutParams.height = textView.layoutParams.height * 2
+        }
     }
 
     override fun getItemCount(): Int {
@@ -25,7 +29,8 @@ class dayeventAdapter(items: ArrayList<Event>, activity: Activity): RecyclerView
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.textView.text = items[position].name
-        //holder.recyclerView.adapter
+        //holder.textView.x = holder.textView.x * 2
+        holder.expandView()
         Log.d(TAG, "onBindViewHolder: " + items[position].name)
 
 
@@ -34,5 +39,10 @@ class dayeventAdapter(items: ArrayList<Event>, activity: Activity): RecyclerView
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_day_event, parent, false)
         return ViewHolder(view)
+    }
+
+    override fun onViewAttachedToWindow(holder: ViewHolder) {
+        holder.expandView()
+        super.onViewAttachedToWindow(holder)
     }
 }
