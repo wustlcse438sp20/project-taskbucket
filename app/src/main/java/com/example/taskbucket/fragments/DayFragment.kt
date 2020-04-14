@@ -20,11 +20,8 @@ import kotlin.collections.ArrayList
  */
 
 
-private var event1 = Events(1, "Lunch", "Consuming boy pussy", 3, 15, 3, 2020, 720, 765)
-private var event2 = Events(2, "Real Shit", "Consuming boy pussy", 3, 15, 3, 2020, 780, 800)
-private var event3 = Events(3, "Bussy Eating", "Consuming boy pussy", 2, 15, 3, 2020, 1200, 1245)
-private var event4 = Events(4, "Bussy Eating", "Consuming boy pussy", 3, 16, 3, 2020, 1200, 1245)
-private var event5 = Events(5, "Bussy Eating", "Consuming boy pussy", 3, 15, 4, 2020, 1200, 1245)
+private var event1 = Events(1, "Lunch", "Consuming", 3, 15, 3, 2020, 720, 765)
+
 
 private var eventList: ArrayList<Events> = ArrayList()
 private var cal: Calendar = Calendar.getInstance()
@@ -47,7 +44,7 @@ class DayFragment() : Fragment() {
 
         initDay(view)
         eventList.add(event1)
-        eventList.add(event2)
+
 
         day_prev_button.setOnClickListener {
             prevDay(view)
