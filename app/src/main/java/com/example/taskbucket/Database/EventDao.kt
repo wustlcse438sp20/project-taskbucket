@@ -16,7 +16,7 @@ interface EventDao {
     fun getAllEvents(): LiveData<List<Event>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(event: Event)
+    fun insert(event: Event) : Long
 
     @Query("DELETE FROM event_table WHERE id = :id ")
     fun deleteOne(id : Int)

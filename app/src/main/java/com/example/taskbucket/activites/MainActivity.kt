@@ -2,6 +2,7 @@ package com.example.taskbucket.activites
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import android.view.Menu
@@ -103,13 +104,15 @@ class MainActivity : AppCompatActivity() {
 
         //setActionBar(toolbar)
         eventViewModel = ViewModelProvider(this).get(EventViewModel::class.java)
-        eventViewModel!!.getYears()
-        eventViewModel!!.getEventsNoBucket()
+//        eventViewModel!!.getYears()
+//        eventViewModel!!.getEventsNoBucket()
         eventViewModel!!.currentEvents.observe(this, Observer { events ->
             // Update the cached copy of the words in the adapter.
+            Log.d("here", "here")
             currentEvents.clear()
             currentEvents.addAll(events)
             //adapter.notifyDataSetChanged()
+            Log.d("current", currentEvents.toString())
         })
         eventViewModel!!.yearList.observe(this, Observer { events ->
             // Update the cached copy of the words in the adapter.
@@ -117,8 +120,21 @@ class MainActivity : AppCompatActivity() {
             uniqueYears.addAll(events)
             //adapter.notifyDataSetChanged()
         })
+//        insertWithOptionals(name = "test", year = 1998)
+//        yearBucket(2001)
+        eventViewModel!!.insert(Event(name = "help", year = 2001))
+
+//        yearBucket(2001)
+        eventViewModel!!.insert(Event(name = "testerino", year = 2001))
+        yearBucket(2001)
+        Log.d("currentFix", "here")
 
     }
+
+//    override fun onStart() {
+//        super.onStart()
+//
+//    }
     fun oldEventGetter() { // automatically gets current date and calls get old on the database
         eventViewModel!!.getOld(date.year, date.dayOfMonth, date.month.value)
     }
@@ -151,8 +167,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        eventViewModel!!.insert(Event(name, month?.value, day, year, start, end, description, week_day?.value,
-            calcDay, project_id))
+        val e = Event(name, month?.value, day, year, start, end, description, week_day?.value,
+            calcDay, project_id)
+        eventViewModel!!.insert(e)
+        Log.d("theevent", e.toString())
     }
 
     fun yearBucket(year: Int) {

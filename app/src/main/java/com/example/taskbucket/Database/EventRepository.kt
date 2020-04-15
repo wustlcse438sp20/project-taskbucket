@@ -1,5 +1,6 @@
 package com.example.databasefinal
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Dispatchers
@@ -20,9 +21,17 @@ class EventRepository(private val eventDao: EventDao) {
     var yearList: LiveData<List<Int>> = MutableLiveData()
 
     fun insert(event: Event) {
+//        Log.d("event", event.toString())
         CoroutineScope(Dispatchers.IO).launch {
             eventDao!!.insert(event)
+//            Log.d("eventRow", eventDao!!.insert(event).toString())
         }
+    }
+    fun getAll() {
+//        CoroutineScope(Dispatchers.IO).launch {
+            currentEvents = eventDao!!.getAllEvents()
+//        }
+        Log.d("currentEvents", currentEvents.value.toString())
     }
     fun deleteOne(id : Int) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -31,9 +40,10 @@ class EventRepository(private val eventDao: EventDao) {
     }
 
     fun getEventsByYear(year : Int) {
-        CoroutineScope(Dispatchers.IO).launch {
+//        CoroutineScope(Dispatchers.IO).launch {
             currentEvents = eventDao!!.getEventsByYear(year)
-        }
+//        }
+        Log.d("currentEvents", currentEvents.value.toString())
     }
     fun getEventsByMonth(year : Int, month : Int) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -58,9 +68,9 @@ class EventRepository(private val eventDao: EventDao) {
     }
 
     fun getYears() {
-        CoroutineScope(Dispatchers.IO).launch {
+//        CoroutineScope(Dispatchers.IO).launch {
             yearList = eventDao!!.getAllYears()
-        }
+//        }
     }
 
     fun deleteOld(year: Int, day: Int, month: Int) {
