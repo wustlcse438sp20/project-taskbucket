@@ -39,6 +39,7 @@ class daygridAdapter(items: ArrayList<daygridEvent>, activity: Activity): Recycl
         }else{
             var gLayout = GridLayoutManager(activity,items[position].events.size)
             holder.recyclerView.layoutManager = gLayout
+            Log.d(TAG, "Recycler Elevation: " + holder.recyclerView.elevation)
         }
 
 

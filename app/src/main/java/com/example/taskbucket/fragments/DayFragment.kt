@@ -8,17 +8,20 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.databasefinal.Event
 import com.example.taskbucket.R
 import com.example.taskbucket.adapters.daygridAdapter
 import com.example.taskbucket.adapters.daygridEvent
+import com.example.taskbucket.viewmodels.EventViewModel
 import kotlinx.android.synthetic.main.fragment_bucket.*
 import kotlinx.android.synthetic.main.fragment_day.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import androidx.lifecycle.Observer
 
 /**
  * A simple [Fragment] subclass.
@@ -30,7 +33,7 @@ private var cal: Calendar = Calendar.getInstance()
 
 class DayFragment() : Fragment() {
     val TAG: String = "DayFragment"
-
+    val test = true
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -59,10 +62,10 @@ class DayFragment() : Fragment() {
         var items = arrayListOf<daygridEvent>()
         var emptyEvents = arrayListOf<Event>()
 
-        var event1 = Event("test", 3, 4, 2020, 5, 8, "blahblah blash",3,13, 0)
-        var event2 = Event("test", 3, 4, 2020, 5, 8, "blahblah blash",3,13, 0)
-        var event3 = Event("test", 3, 4, 2020, 5, 8, "blahblah blash",3,13, 0)
-        var event4 = Event("test", 3, 4, 2020, 5, 8, "blahblah blash",3,13, 0)
+        var event1 = Event("test", cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), 2020, 300, 600, "blahblah blash",cal.get(Calendar.WEEK_OF_MONTH),cal.get(Calendar.WEEK_OF_YEAR), 0)
+        var event2 = Event("test", 3, 4, 2020, 5, 7, "blahblah blash",3,13, 0)
+        var event3 = Event("test", 3, 4, 2020, 5, 9, "blahblah blash",3,13, 0)
+        var event4 = Event("test", 3, 4, 2020, 5, 6, "blahblah blash",3,13, 0)
         var events = arrayListOf<Event>()
         events.add(event1)
         events.add(event2)
@@ -79,6 +82,17 @@ class DayFragment() : Fragment() {
         }
         recyclerView_day.adapter = daygridAdapter(items,requireActivity())
         recyclerView_day.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
+
+
+            var viewModel = ViewModelProvider(this).get(EventViewModel::class.java)
+
+            viewModel.getEventsByYear(2020)
+            viewModel.currentEvents.observe(viewLifecycleOwner, Observer{
+                println("Events: $it")
+                println("Reached")
+            })
+
+
     }
 
     override fun onResume() {
@@ -115,10 +129,7 @@ class DayFragment() : Fragment() {
         val output = sdf.format(cal.time)
         val tv = view.findViewById<TextView>(R.id.day_day)
         tv.text = output
-        println("Year: " + cal.get(Calendar.YEAR))
-        println("Month: " +  cal.get(Calendar.MONTH))
-        println("Week: " + cal.get(Calendar.WEEK_OF_YEAR))
-        println("Day: " + cal.get(Calendar.DAY_OF_WEEK))
+
     }
 
     fun prevDay(view: View) {
