@@ -3,6 +3,7 @@ package com.example.databasefinal
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.CoroutineScope
@@ -16,9 +17,10 @@ class EventRepository(private val eventDao: EventDao) {
 
     // Room executes all queries on a separate thread.
     // Observed LiveData will notify the observer when the data has changed.
-    val oldEvents: LiveData<List<Event>> = MutableLiveData()
-    var currentEvents: LiveData<List<Event>> = MutableLiveData()
-    var yearList: LiveData<List<Int>> = MutableLiveData()
+    val oldEvents: MutableLiveData<List<Event>> = MutableLiveData()
+    val currentEvents: MutableLiveData<List<Event>> = MutableLiveData()
+//val currentEvents: MutableLiveData<List<Event>> = eventDao!!.getAllEvents()
+    var yearList: MutableLiveData<List<Int>> = MutableLiveData()
 
     fun insert(event: Event) {
 //        Log.d("event", event.toString())
@@ -29,9 +31,10 @@ class EventRepository(private val eventDao: EventDao) {
     }
     fun getAll() {
 //        CoroutineScope(Dispatchers.IO).launch {
-            currentEvents = eventDao!!.getAllEvents()
+            eventDao!!.getAllEvents().observeOnce {
+                currentEvents.value = it
+            }
 //        }
-        Log.d("currentEvents", currentEvents.value.toString())
     }
     fun deleteOne(id : Int) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -41,35 +44,54 @@ class EventRepository(private val eventDao: EventDao) {
 
     fun getEventsByYear(year : Int) {
 //        CoroutineScope(Dispatchers.IO).launch {
-            currentEvents = eventDao!!.getEventsByYear(year)
+            eventDao!!.getEventsByYear(year).observeOnce {
+                currentEvents.value = it
+            }
 //        }
-        Log.d("currentEvents", currentEvents.value.toString())
     }
     fun getEventsByMonth(year : Int, month : Int) {
-        CoroutineScope(Dispatchers.IO).launch {
-            currentEvents = eventDao!!.getEventsByMonth(year, month)
+//        CoroutineScope(Dispatchers.IO).launch {
+//            val result = eventDao!!.getEventsByMonth(year, month)
+//            currentEvents.value = result.value
+        eventDao!!.getEventsByMonth(year, month).observeOnce {
+            currentEvents.value = it
         }
+//        }
     }
     fun getEventsByDay(year : Int, month : Int, day : Int) {
-        CoroutineScope(Dispatchers.IO).launch {
-            currentEvents = eventDao!!.getEventsByDay(year, month, day)
+//        CoroutineScope(Dispatchers.IO).launch {
+//            val result = eventDao!!.getEventsByDay(year, month, day)
+//            currentEvents.value = result.value
+//        }
+        eventDao!!.getEventsByDay(year, month, day).observeOnce {
+            currentEvents.value = it
         }
     }
     fun getEventsByWeek(year : Int, month : Int, week : Int) {
-        CoroutineScope(Dispatchers.IO).launch {
-            currentEvents = eventDao!!.getEventsByWeek(year, month, week)
+//        CoroutineScope(Dispatchers.IO).launch {
+//            val result = eventDao!!.getEventsByWeek(year, month, week)
+//            currentEvents.value = result.value
+//        }
+        eventDao!!.getEventsByWeek(year, month, week).observeOnce {
+            currentEvents.value = it
         }
     }
 
     fun getOld(year: Int, day: Int, month: Int) {
-        CoroutineScope(Dispatchers.IO).launch {
-            currentEvents = eventDao!!.getOld(year, day, month)
+//        CoroutineScope(Dispatchers.IO).launch {
+//            val result = eventDao!!.getOld(year, day, month)
+//            currentEvents.value = result.value
+//        }
+        eventDao!!.getOld(year, day, month).observeOnce {
+            currentEvents.value = it
         }
     }
 
     fun getYears() {
 //        CoroutineScope(Dispatchers.IO).launch {
-            yearList = eventDao!!.getAllYears()
+        eventDao!!.getAllYears().observeOnce {
+            yearList.value = it
+        }
 //        }
     }
 
@@ -101,14 +123,22 @@ class EventRepository(private val eventDao: EventDao) {
     }
 
     fun getEventsNoBucket() {
-        CoroutineScope(Dispatchers.IO).launch {
-            currentEvents = eventDao!!.getEventsNoBucket()
+//        CoroutineScope(Dispatchers.IO).launch {
+//            val result = eventDao!!.getEventsNoBucket()
+//            currentEvents.value = result.value
+//        }
+        eventDao!!.getEventsNoBucket().observeOnce {
+            currentEvents.value = it
         }
     }
 
     fun getEventsByProject() {
-        CoroutineScope(Dispatchers.IO).launch {
-            currentEvents = eventDao!!.getEventsByProject()
+//        CoroutineScope(Dispatchers.IO).launch {
+//            val result = eventDao!!.getEventsByProject()
+//            currentEvents.value = result.value
+//        }
+        eventDao!!.getEventsByProject().observeOnce {
+            currentEvents.value = it
         }
     }
 
@@ -116,6 +146,15 @@ class EventRepository(private val eventDao: EventDao) {
         CoroutineScope(Dispatchers.IO).launch {
             eventDao!!.updateEvent(id, year, month, day, week_number, week_day)
         }
+    }
+
+    fun <T> LiveData<T>.observeOnce(observer: (T) -> Unit) { //https://stackoverflow.com/questions/47854598/livedata-remove-observer-after-first-callback
+        observeForever(object: Observer<T> {
+            override fun onChanged(value: T) {
+                removeObserver(this)
+                observer(value)
+            }
+        })
     }
 
 }

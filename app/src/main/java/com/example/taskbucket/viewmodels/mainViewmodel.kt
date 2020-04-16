@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.databasefinal.Event
 import com.example.databasefinal.EventDatabase
@@ -35,9 +36,8 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
         repository.deleteOne(id)
     }
 
-    fun getEventsByYear(year : Int) {// = viewModelScope.launch {
+    fun getEventsByYear(year : Int)  = viewModelScope.launch {
         repository.getEventsByYear(year)
-        Log.d("currentViewModel", currentEvents.value.toString())
     }
     fun getEventsByMonth(year : Int, month : Int) = viewModelScope.launch {
         repository.getEventsByMonth(year, month)

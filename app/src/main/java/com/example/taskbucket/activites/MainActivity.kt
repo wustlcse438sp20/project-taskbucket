@@ -108,26 +108,32 @@ class MainActivity : AppCompatActivity() {
 //        eventViewModel!!.getEventsNoBucket()
         eventViewModel!!.currentEvents.observe(this, Observer { events ->
             // Update the cached copy of the words in the adapter.
-            Log.d("here", "here")
-            currentEvents.clear()
-            currentEvents.addAll(events)
+            if(events != null) {
+                currentEvents.clear()
+                currentEvents.addAll(events)
+            }
             //adapter.notifyDataSetChanged()
-            Log.d("current", currentEvents.toString())
+//            Log.d("current", currentEvents.size.toString())
         })
         eventViewModel!!.yearList.observe(this, Observer { events ->
             // Update the cached copy of the words in the adapter.
-            uniqueYears.clear()
-            uniqueYears.addAll(events)
+            if(events != null) {
+                uniqueYears.clear()
+                uniqueYears.addAll(events)
+            }
             //adapter.notifyDataSetChanged()
         })
-//        insertWithOptionals(name = "test", year = 1998)
+        eventViewModel!!.getAll()
+        insertWithOptionals(name = "test", year = 1998)
 //        yearBucket(2001)
         eventViewModel!!.insert(Event(name = "help", year = 2001))
 
+
 //        yearBucket(2001)
         eventViewModel!!.insert(Event(name = "testerino", year = 2001))
-        yearBucket(2001)
-        Log.d("currentFix", "here")
+//        yearBucket(1998)
+        eventViewModel!!.getAll()
+
 
     }
 
