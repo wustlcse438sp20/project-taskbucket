@@ -1,90 +1,112 @@
 package com.example.taskbucket.fragments
 
+import android.annotation.SuppressLint
+import android.nfc.Tag
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.databasefinal.Event
 import com.example.taskbucket.R
-import com.example.taskbucket.adapter.DayAdapter
-import com.example.taskbucket.data.Events
+import com.example.taskbucket.adapters.daygridAdapter
+import com.example.taskbucket.adapters.daygridEvent
+import com.example.taskbucket.viewmodels.EventViewModel
+import kotlinx.android.synthetic.main.fragment_bucket.*
 import kotlinx.android.synthetic.main.fragment_day.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import androidx.lifecycle.Observer
+import java.time.Year
 
 /**
  * A simple [Fragment] subclass.
  */
 
 
-private var event1 = Events(1, "Lunch", "Consuming boy pussy", 3, 15, 3, 2020, 720, 765)
-private var event2 = Events(2, "Real Shit", "Consuming boy pussy", 3, 15, 3, 2020, 780, 800)
-private var event3 = Events(3, "Bussy Eating", "Consuming boy pussy", 2, 15, 3, 2020, 1200, 1245)
-private var event4 = Events(4, "Bussy Eating", "Consuming boy pussy", 3, 16, 3, 2020, 1200, 1245)
-private var event5 = Events(5, "Bussy Eating", "Consuming boy pussy", 3, 15, 4, 2020, 1200, 1245)
-
-private var eventList: ArrayList<Events> = ArrayList()
 private var cal: Calendar = Calendar.getInstance()
-private lateinit var adapter: DayAdapter
+
 
 class DayFragment() : Fragment() {
+    val TAG: String = "DayFragment"
+    val test = true
+
+    lateinit var viewModel:EventViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_day, container, false)
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider(this).get(EventViewModel::class.java)
+        viewModel.getEventsByYear(2020)
+        viewModel.currentEvents.observe(viewLifecycleOwner, Observer {
+            Log.d(TAG, "Events: " + it)
+        })
 
 
         initDay(view)
-        eventList.add(event1)
-        eventList.add(event2)
-
+        populateDayTable()
         day_prev_button.setOnClickListener {
             prevDay(view)
+            populateDayTable()
         }
 
         day_next_button.setOnClickListener {
             nextDay(view)
+
         }
+
+
+
+
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        populateDayTable()
-    }
 
     fun populateDayTable() {
-        val chart = activity!!.findViewById<RelativeLayout>(R.id.day_table)
-        val chart_height = chart.height
-        val chart_width = chart.width
+        var currentEvents: ArrayList<Event> = ArrayList()
+        viewModel.getEventsByDay(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH))
 
-        println("Height: " + chart_height)
-        println("Width: " + chart_width)
+        viewModel.currentEvents.observe(viewLifecycleOwner, Observer {
+            currentEvents = ArrayList(it)
+        })
 
-        for(event in eventList){
-            val btn = Button(context)
-            val btn_double:Double = ((event.end_time - event.start_time)/60.0) * (chart_height/24.0)
-            val btn_height:Int = btn_double.toInt()
-            val btn_width:Int = chart_width-(chart_width* 16/100)
-            println("Height: " + btn_height)
-            println("Width: " + btn_width)
-            btn.text = event.title
-            btn.layoutParams = LinearLayout.LayoutParams(btn_width,btn_height)
-            btn.x = chart_width*0.16F
-            btn.y = event.start_time/60F * (chart_height/24)
-            chart.addView(btn)
+
+        recyclerView_day.layoutManager = LinearLayoutManager(requireContext())
+        var items = arrayListOf<daygridEvent>()
+        var emptyEvents = arrayListOf<Event>()
+
+
+
+        for(i in 0..23){
+            var dayEvents = arrayListOf<Event>()
+            for(event in currentEvents){
+                if(i ==10 ){
+                    items.add((daygridEvent(i, dayEvents)))
+                    Log.d(TAG, "onViewCreated: " + dayEvents.size)
+                }else{
+                    items.add(daygridEvent(i, emptyEvents))
+                }
+
+            }
         }
+        recyclerView_day.adapter = daygridAdapter(items,requireActivity())
+        recyclerView_day.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
+
     }
 
     fun initDay(view: View) {
@@ -92,10 +114,7 @@ class DayFragment() : Fragment() {
         val output = sdf.format(cal.time)
         val tv = view.findViewById<TextView>(R.id.day_day)
         tv.text = output
-        println("Year: " + cal.get(Calendar.YEAR))
-        println("Month: " +  cal.get(Calendar.MONTH))
-        println("Week: " + cal.get(Calendar.WEEK_OF_YEAR))
-        println("Day: " + cal.get(Calendar.DAY_OF_WEEK))
+
     }
 
     fun prevDay(view: View) {
@@ -116,8 +135,8 @@ class DayFragment() : Fragment() {
 
 
     fun clearEvents(view:View){
-        eventList.clear()
-        val chart = view.findViewById<RelativeLayout>(R.id.day_table)
-        chart.removeAllViews()
+
+        //val chart = view.findViewById<RelativeLayout>(R.id.day_table)
+        //chart.removeAllViews()
     }
 }
