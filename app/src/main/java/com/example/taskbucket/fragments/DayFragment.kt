@@ -86,12 +86,6 @@ class DayFragment() : Fragment() {
 
             var viewModel = ViewModelProvider(this).get(EventViewModel::class.java)
 
-            viewModel.getEventsByYear(2020)
-            viewModel.currentEvents.observe(viewLifecycleOwner, Observer{
-                println("Events: $it")
-                println("Reached")
-            })
-
 
     }
 

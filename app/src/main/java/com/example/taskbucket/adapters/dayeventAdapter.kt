@@ -30,7 +30,7 @@ class dayeventAdapter(items: ArrayList<Event>, activity: Activity): RecyclerView
                 LayoutInflater.from(view.context).inflate(R.layout.edit_event_info, null)
             val mBuilder = AlertDialog.Builder(view.context)
                 .setView(dialogView)
-                .setTitle("Playlist Info")
+                .setTitle("Edit Info")
             val mAlertDialog = mBuilder.show()
         }
 
@@ -48,9 +48,9 @@ class dayeventAdapter(items: ArrayList<Event>, activity: Activity): RecyclerView
             holder.editEvent(it)
         }
         holder.linearLayout.elevation = 1F
-        Log.d(TAG, "onBindViewHolder: " + items[position].name)
-        Log.d(TAG, "TextView Height: " + holder.textView.height)
-        Log.d(TAG, "LinearLayout elevation: " + holder.linearLayout.elevation)
+//        Log.d(TAG, "onBindViewHolder: " + items[position].name)
+//        Log.d(TAG, "TextView Height: " + holder.textView.height)
+//        Log.d(TAG, "LinearLayout elevation: " + holder.linearLayout.elevation)
 
 
     }

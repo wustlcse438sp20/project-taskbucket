@@ -30,7 +30,6 @@ class daygridAdapter(items: ArrayList<daygridEvent>, activity: Activity): Recycl
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        Log.d(TAG, "onBindViewHolder: " + items[position].events.size)
         holder.hour.text = items[position].hour.toString() + ":00 "
         holder.recyclerView.adapter = dayeventAdapter(items[position].events, activity)
         //holder.recyclerView.layoutManager = LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL, false)
@@ -39,7 +38,7 @@ class daygridAdapter(items: ArrayList<daygridEvent>, activity: Activity): Recycl
         }else{
             var gLayout = GridLayoutManager(activity,items[position].events.size)
             holder.recyclerView.layoutManager = gLayout
-            Log.d(TAG, "Recycler Elevation: " + holder.recyclerView.elevation)
+
         }
 
 
