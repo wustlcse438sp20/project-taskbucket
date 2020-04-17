@@ -78,8 +78,17 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
         repository.getEventsByProject()
     }
 
-    fun updateEvent(id: Int, year: Int?, month: Int?, day: Int?, week_number: Int?, week_day: Int?) {
-        repository.updateEvent(id, year, month, day, week_number, week_day)
+    fun updateEvent(id: Int, name: String,
+                    month: Int?,
+                    day: Int?,
+                    year: Int,
+                    start: Int?,
+                    end: Int?,
+                    description: String?,
+                    week_day: Int?,
+                    week_number: Int?, // 1 for week 1 (1-7), 2 for week 2 (8-14), etc.
+                    project_id: Int?) {
+        repository.updateEvent(id, name, month, day, year, start, end, description, week_day, week_number, project_id)
     }
 
     fun getYears() {
@@ -88,5 +97,9 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getAll() {
         repository.getAll()
+    }
+
+    fun getOneEvent(id: Int){
+        repository.getOneEvent(id)
     }
 }

@@ -87,6 +87,7 @@ class MainActivity : AppCompatActivity() {
     private var eventViewModel: EventViewModel? = null
     private var uniqueYears: ArrayList<Int> = ArrayList()
     private var currentEvents: ArrayList<Event> = ArrayList()
+    private var done: Boolean = false
     val date = LocalDateTime.now()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,7 +114,8 @@ class MainActivity : AppCompatActivity() {
                 currentEvents.addAll(events)
             }
             //adapter.notifyDataSetChanged()
-//            Log.d("current", currentEvents.size.toString())
+//            Log.d("current", currentEvents.toString())
+//            testForUpdate()
         })
         eventViewModel!!.yearList.observe(this, Observer { events ->
             // Update the cached copy of the words in the adapter.
@@ -123,17 +125,18 @@ class MainActivity : AppCompatActivity() {
             }
             //adapter.notifyDataSetChanged()
         })
-        eventViewModel!!.getAll()
-        insertWithOptionals(name = "test", year = 1998)
+//        eventViewModel!!.getAll()
+//        insertWithOptionals(name = "test", year = 1998)
 //        yearBucket(2001)
-        eventViewModel!!.insert(Event(name = "help", year = 2001))
+//        eventViewModel!!.insert(Event(name = "help", year = 2001))
 
 
 //        yearBucket(2001)
-        eventViewModel!!.insert(Event(name = "testerino", year = 2001))
+//        eventViewModel!!.insert(Event(name = "testerino", year = 2001))
 //        yearBucket(1998)
+//        eventViewModel!!.getAll()
+//        val e = eventViewModel!!.getOneEvent(0)
         eventViewModel!!.getAll()
-
 
     }
 
@@ -194,13 +197,41 @@ class MainActivity : AppCompatActivity() {
     // you can write your own based on the stuff in repository, should give you all the functionality
     // you need to pass to adapter or whatever you are using
 
-    fun updateEvent(id: Int, year: Int? = null, month: Month? = null, day: Int? = null,
-                    week_number: Int? = null, week_day: DayOfWeek? = null) {
-        eventViewModel!!.updateEvent(id, year, month?.value, day, week_number, week_day?.value)
+    fun updateEvent(event: Event, name: String = "",
+                    month: Int? = -1,
+                    day: Int? = -1,
+                    year: Int = -1,
+                    start: Int? = -1,
+                    end: Int? = -1,
+                    description: String? = "",
+                    week_day: Int? = -1,
+                    week_number: Int? = -1, // 1 for week 1 (1-7), 2 for week 2 (8-14), etc.
+                    project_id: Int? = -1) {
+        Log.d("currentCheck", (year!=-1).toString())
+        eventViewModel!!.updateEvent(event.id,
+            if(name != "") name else event.name,
+            if(month != -1) month else event.month,
+            if(day != -1) day else event.day,
+            if(year != -1) year else event.year,
+            if(start != -1) start else event.start,
+            if(end != -1) end else event.end,
+            if(description != "") description else event.description,
+            if(week_day != -1) week_day else event.week_day,
+            if(week_number != -1) week_number else event.week_number,
+            if(project_id != -1) project_id else event.project_id)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.bucket_toolbar, menu)
         return super.onCreateOptionsMenu(menu)
     }
+
+//    fun testForUpdate() {
+//        if(!done) {
+//            val e = currentEvents[0]
+//            Log.d("currentSingleEvent", e.toString())
+//            updateEvent(e, name = "Updated!", year = 2001)
+//            done = false
+//        }
+//    }
 }

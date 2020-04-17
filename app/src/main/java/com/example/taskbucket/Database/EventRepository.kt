@@ -22,6 +22,12 @@ class EventRepository(private val eventDao: EventDao) {
 //val currentEvents: MutableLiveData<List<Event>> = eventDao!!.getAllEvents()
     var yearList: MutableLiveData<List<Int>> = MutableLiveData()
 
+//    var lastQuery = "all"
+//    var lastYear = 0
+//    var lastMonth = 0
+//    var lastDay = 0
+//    var lastWeek = 0
+
     fun insert(event: Event) {
 //        Log.d("event", event.toString())
         CoroutineScope(Dispatchers.IO).launch {
@@ -142,9 +148,18 @@ class EventRepository(private val eventDao: EventDao) {
         }
     }
 
-    fun updateEvent(id: Int, year: Int?, month: Int?, day: Int?, week_number: Int?, week_day: Int?) {
+    fun updateEvent(id: Int, name: String,
+                    month: Int?,
+                    day: Int?,
+                    year: Int,
+                    start: Int?,
+                    end: Int?,
+                    description: String?,
+                    week_day: Int?,
+                    week_number: Int?, // 1 for week 1 (1-7), 2 for week 2 (8-14), etc.
+                    project_id: Int?) {
         CoroutineScope(Dispatchers.IO).launch {
-            eventDao!!.updateEvent(id, year, month, day, week_number, week_day)
+            eventDao!!.updateEvent(id, name, month, day, year, start, end, description, week_day, week_number, project_id)
         }
     }
 
@@ -156,5 +171,22 @@ class EventRepository(private val eventDao: EventDao) {
             }
         })
     }
+    fun getOneEvent(id: Int){
+        eventDao!!.getOneEvent(id).observeOnce {
+            currentEvents.value = it
+        }
+    }
+
+//    fun lastQueryParse() {
+//        when(lastQuery) {
+//            "all" -> getAll()
+//            "year" -> getEventsByYear(lastYear)
+//            "month" -> getEventsByMonth(lastYear, lastMonth)
+//            "day" -> getEventsByDay(lastYear, lastMonth, lastDay)
+//            "week" -> getEventsByWeek(lastYear, lastMonth, lastWeek)
+//            "project" -> getEventsByProject()
+//            "nobucket" -> getEventsNoBucket()
+//        }
+//    }
 
 }
