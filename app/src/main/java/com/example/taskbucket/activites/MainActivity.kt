@@ -6,7 +6,11 @@ import android.util.Log
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import android.view.Menu
+import android.view.MenuItem
+import android.view.Window
 import android.widget.Toolbar
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.view.ActionMode
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -15,6 +19,7 @@ import com.example.databasefinal.Event
 import com.example.taskbucket.R
 import com.example.taskbucket.viewmodels.EventViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationView
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -87,6 +92,7 @@ class MainActivity : AppCompatActivity() {
     private var eventViewModel: EventViewModel? = null
     private var uniqueYears: ArrayList<Int> = ArrayList()
     private var currentEvents: ArrayList<Event> = ArrayList()
+    lateinit var NavigationView: NavigationView
     val date = LocalDateTime.now()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,15 +100,24 @@ class MainActivity : AppCompatActivity() {
         mBottomNav = findViewById(R.id.bottom_nav)
         mDrawerLayout = findViewById(R.id.drawer_layout)
         toolbar = findViewById(R.id.toolbar)
+        NavigationView = findViewById(R.id.nav_view)
+        //set up bottom nav
         val controller = findNavController(R.id.nav_host_fragment)
         mBottomNav.setupWithNavController(controller)
+
+        //set up navigation drawer
         val appBarConfiguration = AppBarConfiguration(controller.graph, mDrawerLayout)
+        val drawerNavController = findNavController(R.id.nav_host_fragment)
+        NavigationView.setupWithNavController(drawerNavController)
         setSupportActionBar(toolbar)
+
+        val toggle = ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close)
+        mDrawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
         supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        //supportActionBar!!.setDisplayShowHomeEnabled(true)
 
-        //setActionBar(toolbar)
         eventViewModel = ViewModelProvider(this).get(EventViewModel::class.java)
 //        eventViewModel!!.getYears()
 //        eventViewModel!!.getEventsNoBucket()
@@ -123,16 +138,16 @@ class MainActivity : AppCompatActivity() {
             }
             //adapter.notifyDataSetChanged()
         })
-        eventViewModel!!.getAll()
-        insertWithOptionals(name = "test", year = 1998)
+        //eventViewModel!!.getAll()
+        //insertWithOptionals(name = "test", year = 1998)
 //        yearBucket(2001)
-        eventViewModel!!.insert(Event(name = "help", year = 2001))
+        //eventViewModel!!.insert(Event(name = "help", year = 2001))
 
 
 //        yearBucket(2001)
-        eventViewModel!!.insert(Event(name = "testerino", year = 2001))
+        //eventViewModel!!.insert(Event(name = "testerino", year = 2001))
 //        yearBucket(1998)
-        eventViewModel!!.getAll()
+        //eventViewModel!!.getAll()
 
 
     }
