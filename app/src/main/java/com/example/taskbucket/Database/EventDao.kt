@@ -69,4 +69,18 @@ interface EventDao {
     @Query("SELECT * FROM event_table WHERE id = :id")
     fun getOneEvent(id: Int) : LiveData<List<Event>>
 
+
+    // Project table
+    @Query("SELECT * from project_table ORDER BY name ASC")
+    fun getAllProjects(): LiveData<List<Project>>
+    @Query("SELECT * FROM project_table WHERE id = :id")
+    fun getOneProject(id: Int) : LiveData<List<Project>>
+
+    @Query("SELECT MAX(id) from project_table")
+    fun getLastId() : LiveData<Int>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertProject(project: Project) : Long
+    @Query("DELETE FROM project_table WHERE id = :id ")
+    fun deleteOneProject(id : Int)
 }

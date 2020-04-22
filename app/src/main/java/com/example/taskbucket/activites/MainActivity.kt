@@ -12,6 +12,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.example.databasefinal.Event
+import com.example.databasefinal.Project
 import com.example.taskbucket.R
 import com.example.taskbucket.viewmodels.EventViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -87,6 +88,8 @@ class MainActivity : AppCompatActivity() {
     private var eventViewModel: EventViewModel? = null
     private var uniqueYears: ArrayList<Int> = ArrayList()
     private var currentEvents: ArrayList<Event> = ArrayList()
+    private var currentProjects: ArrayList<Project> = ArrayList()
+    private var lastProjectId : Int = 0
     private var done: Boolean = false
     val date = LocalDateTime.now()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -117,6 +120,16 @@ class MainActivity : AppCompatActivity() {
 //            Log.d("current", currentEvents.toString())
 //            testForUpdate()
         })
+        eventViewModel!!.currentProjects.observe(this, Observer { events ->
+            // Update the cached copy of the words in the adapter.
+            if(events != null) {
+                currentProjects.clear()
+                currentProjects.addAll(events)
+            }
+            //adapter.notifyDataSetChanged()
+//            Log.d("current", currentProjects.toString())
+//            testForUpdate()
+        })
         eventViewModel!!.yearList.observe(this, Observer { events ->
             // Update the cached copy of the words in the adapter.
             if(events != null) {
@@ -125,19 +138,19 @@ class MainActivity : AppCompatActivity() {
             }
             //adapter.notifyDataSetChanged()
         })
+        eventViewModel!!.lastID.observe(this, Observer { events ->
+            // Update the cached copy of the words in the adapter.
+            if(events != null) {
+                lastProjectId = events
+            }
+            //adapter.notifyDataSetChanged()
+//            Log.d("currentLastID", lastProjectId.toString())
+        })
 //        eventViewModel!!.getAll()
-//        insertWithOptionals(name = "test", year = 1998)
-//        yearBucket(2001)
-//        eventViewModel!!.insert(Event(name = "help", year = 2001))
-
-
-//        yearBucket(2001)
-//        eventViewModel!!.insert(Event(name = "testerino", year = 2001))
-//        yearBucket(1998)
-//        eventViewModel!!.getAll()
-//        val e = eventViewModel!!.getOneEvent(0)
-        eventViewModel!!.getAll()
-
+//        eventViewModel!!.insertProject(Project("hello"))
+//        eventViewModel!!.insertProject(Project("goodbye"))
+//        eventViewModel!!.getProjects()
+//        eventViewModel!!.getLastID()
     }
 
 //    override fun onStart() {
@@ -207,7 +220,7 @@ class MainActivity : AppCompatActivity() {
                     week_day: Int? = -1,
                     week_number: Int? = -1, // 1 for week 1 (1-7), 2 for week 2 (8-14), etc.
                     project_id: Int? = -1) {
-        Log.d("currentCheck", (year!=-1).toString())
+//        Log.d("currentCheck", (year!=-1).toString())
         eventViewModel!!.updateEvent(event.id,
             if(name != "") name else event.name,
             if(month != -1) month else event.month,
@@ -219,6 +232,10 @@ class MainActivity : AppCompatActivity() {
             if(week_day != -1) week_day else event.week_day,
             if(week_number != -1) week_number else event.week_number,
             if(project_id != -1) project_id else event.project_id)
+    }
+
+    fun getLastProjectID() {
+        eventViewModel!!.getLastID()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

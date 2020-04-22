@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.databasefinal.Event
 import com.example.databasefinal.EventDatabase
 import com.example.databasefinal.EventRepository
+import com.example.databasefinal.Project
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,6 +22,8 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
     val oldEvents: LiveData<List<Event>>
     val currentEvents: LiveData<List<Event>>
     val yearList: LiveData<List<Int>>
+    val currentProjects: LiveData<List<Project>>
+    val lastID : LiveData<Int>
 
     init {
         val eventsDao = EventDatabase.getDatabase(application).eventDao()
@@ -28,6 +31,8 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
         oldEvents = repository.oldEvents
         currentEvents = repository.currentEvents
         yearList = repository.yearList
+        currentProjects = repository.currentProject
+        lastID = repository.lastID
     }
     fun insert(event: Event) = viewModelScope.launch {
         repository.insert(event)
@@ -101,5 +106,25 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getOneEvent(id: Int){
         repository.getOneEvent(id)
+    }
+
+    fun getOneProject(id : Int) {
+        repository.getOneProject(id)
+    }
+
+    fun getProjects() {
+        repository.getProjects()
+    }
+
+    fun getLastID() {
+        repository.getLastId()
+    }
+
+    fun insertProject(project : Project) = viewModelScope.launch {
+        repository.insertProject(project)
+    }
+
+    fun deleteOneProject(id : Int) {
+        repository.deleteOneProject(id)
     }
 }
