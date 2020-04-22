@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.databasefinal.Event
 import com.example.databasefinal.EventDatabase
 import com.example.databasefinal.EventRepository
+import com.example.databasefinal.Project
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,6 +22,8 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
     val oldEvents: LiveData<List<Event>>
     val currentEvents: LiveData<List<Event>>
     val yearList: LiveData<List<Int>>
+    val currentProjects: LiveData<List<Project>>
+    val lastID : LiveData<Int>
 
     init {
         val eventsDao = EventDatabase.getDatabase(application).eventDao()
@@ -28,6 +31,8 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
         oldEvents = repository.oldEvents
         currentEvents = repository.currentEvents
         yearList = repository.yearList
+        currentProjects = repository.currentProject
+        lastID = repository.lastID
     }
     fun insert(event: Event) = viewModelScope.launch {
         repository.insert(event)
@@ -78,8 +83,17 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
         repository.getEventsByProject()
     }
 
-    fun updateEvent(id: Int, year: Int?, month: Int?, day: Int?, week_number: Int?, week_day: Int?) {
-        repository.updateEvent(id, year, month, day, week_number, week_day)
+    fun updateEvent(id: Int, name: String,
+                    month: Int?,
+                    day: Int?,
+                    year: Int,
+                    start: Int?,
+                    end: Int?,
+                    description: String?,
+                    week_day: Int?,
+                    week_number: Int?, // 1 for week 1 (1-7), 2 for week 2 (8-14), etc.
+                    project_id: Int?) {
+        repository.updateEvent(id, name, month, day, year, start, end, description, week_day, week_number, project_id)
     }
 
     fun getYears() {
@@ -88,5 +102,29 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getAll() {
         repository.getAll()
+    }
+
+    fun getOneEvent(id: Int){
+        repository.getOneEvent(id)
+    }
+
+    fun getOneProject(id : Int) {
+        repository.getOneProject(id)
+    }
+
+    fun getProjects() {
+        repository.getProjects()
+    }
+
+    fun getLastID() {
+        repository.getLastId()
+    }
+
+    fun insertProject(project : Project) = viewModelScope.launch {
+        repository.insertProject(project)
+    }
+
+    fun deleteOneProject(id : Int) {
+        repository.deleteOneProject(id)
     }
 }
