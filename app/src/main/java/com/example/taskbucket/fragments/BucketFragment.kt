@@ -47,6 +47,7 @@ class BucketFragment : Fragment() {
     lateinit var recyclerView: RecyclerView
     lateinit var drawerLayout: DrawerLayout
     lateinit var draggedEvent: Event
+    lateinit var bucketFilters: ArrayList<ImageButton>
     var items = arrayListOf<TaskItem>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,6 +72,7 @@ class BucketFragment : Fragment() {
         bucketGroup = view.findViewById(R.id.bucket_group)
         floatingActionButton = view.findViewById(R.id.floatingActionButton)
         recyclerView = view.findViewById(R.id.recyclerView)
+        bucketFilters = arrayListOf(bucketFilter1, bucketFilter2, bucketFilter3, bucketFilter4)
         val eventViewModel: EventViewModel by activityViewModels()
         drawerLayout = activity!!.findViewById(R.id.drawer_layout)
         //val toggle = ActionBarDrawerToggle(activity, drawerLayout, R.string.drawer_open, R.string.drawer_close)
@@ -196,9 +198,6 @@ class BucketFragment : Fragment() {
                     bucketGroup.visibility = View.VISIBLE
                 }
             }
-            R.id.action_show_sidebar -> {
-
-            }
             R.id.action_filter -> {
                 if(filterGroup.visibility == View.VISIBLE){
                     filterGroup.visibility = View.GONE
@@ -207,9 +206,6 @@ class BucketFragment : Fragment() {
                 }
             }
 
-            android.R.id.home ->{
-                //drawerLayout.openDrawer(drawerLayout)
-            }
         }
         return super.onOptionsItemSelected(item)
     }
