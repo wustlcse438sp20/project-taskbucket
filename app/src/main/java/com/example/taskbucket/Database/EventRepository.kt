@@ -81,6 +81,19 @@ class EventRepository(private val eventDao: EventDao) {
             currentEvents.value = it
         }
     }
+
+    fun getEventsByThreeDay(year : Int, month : Int, day : Int,
+                            year2 : Int, month2 : Int, day2 : Int,
+                            year3 : Int, month3 : Int, day3 : Int) {
+//        CoroutineScope(Dispatchers.IO).launch {
+//            val result = eventDao!!.getEventsByDay(year, month, day)
+//            currentEvents.value = result.value
+//        }
+        eventDao!!.getEventsByThreeDay(year, month, day, year2, month2, day2,
+            year3, month3, day3).observeOnce {
+            currentEvents.value = it
+        }
+    }
     fun getEventsByWeek(year : Int, month : Int, week : Int) {
 //        CoroutineScope(Dispatchers.IO).launch {
 //            val result = eventDao!!.getEventsByWeek(year, month, week)

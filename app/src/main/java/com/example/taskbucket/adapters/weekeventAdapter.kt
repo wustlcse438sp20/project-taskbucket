@@ -20,28 +20,26 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.databasefinal.Event
 import com.example.taskbucket.R
-import com.example.taskbucket.fragments.DayFragment
 import com.example.taskbucket.viewmodels.EventViewModel
 import kotlinx.android.synthetic.main.edit_event_info.*
 import java.util.*
 import kotlin.collections.ArrayList
 
-class dayeventAdapter(items: ArrayList<Event>, activity: Activity, fragment: Fragment): RecyclerView.Adapter<dayeventAdapter.ViewHolder>(){
-    val TAG: String = "dayeventAdapter"
+class weekeventAdapter(items: ArrayList<Event>, activity: Activity, fragment: Fragment): RecyclerView.Adapter<weekeventAdapter.ViewHolder>(){
+    val TAG: String = "weekeventAdapter"
     var items: ArrayList<Event> = items
     var activity = activity
     var fragment = fragment
-
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
         val textView: TextView = view.findViewById(R.id.textView6)
-        val linearLayout: LinearLayout = view.findViewById(R.id.day_event_linear)
+        //val linearLayout: LinearLayout = view.findViewById(R.id.week_event_linear)
         val view = view
         fun expandView(start:Int, end:Int){
             textView.layoutParams.height = (textView.layoutParams.height * (end - start)/60)
 
         }
         fun editEvent(view:View, event: Event, fragment: Fragment){
-            Log.d("DayEventAdapter", "Event: " + event)
+            Log.d("weekEventAdapter", "Event: " + event)
 
             val dialogView =
                 LayoutInflater.from(view.context).inflate(R.layout.edit_event_info, null)
@@ -57,13 +55,13 @@ class dayeventAdapter(items: ArrayList<Event>, activity: Activity, fragment: Fra
             val datePicker = mAlertDialog.edit_date
             var eventMonth = event.month!!
             var eventYear = event.year
-            var eventDay = event.day!!
-            datePicker.init (eventYear, eventMonth, eventDay){
-                    view, year, month, day ->
+            var eventweek = event.day!!
+            datePicker.init (eventYear, eventMonth, eventweek){
+                    view, year, month, week ->
 
                 eventMonth = month
                 eventYear = year
-                eventDay = day
+                eventweek = week
 
             }
 
@@ -104,18 +102,20 @@ class dayeventAdapter(items: ArrayList<Event>, activity: Activity, fragment: Fra
                 else{
 
                     val cal = Calendar.getInstance()
-                    cal.set(eventYear,eventMonth,eventDay)
+                    cal.set(eventYear,eventMonth,eventweek)
                     val eventWeek = cal.get(Calendar.WEEK_OF_MONTH)
                     val weekday = cal.get(Calendar.DAY_OF_WEEK)
 
-                    val newEvent = Event(title, eventMonth, eventDay, eventYear, start, end, desc, weekday, eventWeek, event.project_id)
+                    val newEvent = Event(title, eventMonth, eventweek, eventYear, start, end, desc, weekday, eventWeek, event.project_id)
 
                     var viewModel = ViewModelProvider(fragment).get(EventViewModel::class.java)
                     viewModel.deleteOne(event.id)
                     viewModel.insert(newEvent)
                     mAlertDialog.dismiss()
 
-            }
+
+
+                }
 
 
 

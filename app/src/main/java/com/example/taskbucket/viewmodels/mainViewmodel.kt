@@ -62,6 +62,11 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
     fun getEventsByDay(year : Int, month : Int, day : Int) = viewModelScope.launch {
         repository.getEventsByDay(year, month, day)
     }
+    fun getEventsByThreeDay(year : Int, month : Int, day : Int,
+                            year2 : Int, month2 : Int, day2 : Int,
+                            year3 : Int, month3 : Int, day3 : Int) = viewModelScope.launch {
+        repository.getEventsByThreeDay(year, month, day, year2, month2, day2, year3, month3, day3)
+    }
     fun getEventsByWeek(year : Int, month : Int, week : Int) = viewModelScope.launch {
         repository.getEventsByWeek(year, month, week)
     }

@@ -1,14 +1,13 @@
 package com.example.taskbucket.fragments
 
-import android.annotation.SuppressLint
-import android.nfc.Tag
+
 import android.os.Bundle
-import android.util.Log
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.view.children
+
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -18,13 +17,14 @@ import com.example.taskbucket.R
 import com.example.taskbucket.adapters.daygridAdapter
 import com.example.taskbucket.adapters.daygridEvent
 import com.example.taskbucket.viewmodels.EventViewModel
-import kotlinx.android.synthetic.main.fragment_bucket.*
+
 import kotlinx.android.synthetic.main.fragment_day.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import androidx.lifecycle.Observer
-import java.time.Year
+import androidx.recyclerview.widget.RecyclerView
+
 
 /**
  * A simple [Fragment] subclass.
@@ -39,14 +39,21 @@ class DayFragment() : Fragment() {
     val test = true
 
     lateinit var viewModel:EventViewModel
-
+    lateinit var adapter: daygridAdapter
+    private var items = arrayListOf<daygridEvent>()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        val root =  inflater.inflate(R.layout.fragment_day, container, false)
+        val recyclerView_day = root.findViewById<RecyclerView>(R.id.recyclerView_day)
+        adapter = daygridAdapter(items,requireActivity(), this)
+        recyclerView_day.adapter = adapter
+        recyclerView_day.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView_day.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
 
-        return inflater.inflate(R.layout.fragment_day, container, false)
+        return root
     }
 
 
@@ -55,12 +62,10 @@ class DayFragment() : Fragment() {
         viewModel = ViewModelProvider(this).get(EventViewModel::class.java)
         viewModel.getEventsByYear(2020)
         viewModel.currentEvents.observe(viewLifecycleOwner, Observer {
-            Log.d(TAG, "Events: " + it)
+            println("TEST: " + it)
         })
-
-
         initDay(view)
-        populateDayTable()
+
         day_prev_button.setOnClickListener {
             prevDay(view)
             populateDayTable()
@@ -68,7 +73,7 @@ class DayFragment() : Fragment() {
 
         day_next_button.setOnClickListener {
             nextDay(view)
-
+            populateDayTable()
         }
 
 
@@ -77,35 +82,73 @@ class DayFragment() : Fragment() {
     }
 
 
+    override fun onResume() {
+        super.onResume()
+        populateDayTable()
+    }
+
     fun populateDayTable() {
         var currentEvents: ArrayList<Event> = ArrayList()
         viewModel.getEventsByDay(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH))
 
         viewModel.currentEvents.observe(viewLifecycleOwner, Observer {
+            items.clear()
             currentEvents = ArrayList(it)
-        })
-
-
-        recyclerView_day.layoutManager = LinearLayoutManager(requireContext())
-        var items = arrayListOf<daygridEvent>()
-        var emptyEvents = arrayListOf<Event>()
+            currentEvents.sortBy { it.start }
 
 
 
-        for(i in 0..23){
+
+            var emptyEvents = arrayListOf<Event>()
+
             var dayEvents = arrayListOf<Event>()
-            for(event in currentEvents){
-                if(i ==10 ){
-                    items.add((daygridEvent(i, dayEvents)))
-                    Log.d(TAG, "onViewCreated: " + dayEvents.size)
+
+            var currentHour = 0
+            var dayEventMap =  mutableMapOf<Int, ArrayList<Event>>()
+            for(i in 0 until currentEvents.size){
+                val event = currentEvents[i]
+                if(currentEvents.size == 1){
+                    currentHour = event.start!! /60
+                    dayEvents.add(event)
+                    dayEventMap[currentHour] = dayEvents
+
+                }
+                else {
+                    if(event.start!! / 60 == currentHour){
+                        dayEvents.add(event)
+                    }
+                    else{
+                        if(dayEvents.isNotEmpty()){
+                            dayEventMap[currentHour] = dayEvents
+                        }
+
+                        dayEvents.clear()
+                        currentHour = event.start!! / 60
+                        dayEvents.add(event)
+                        if(i == currentEvents.size-1){
+                            dayEventMap[currentHour] = dayEvents
+                        }
+                    }
+                }
+            }
+
+
+            for(i in 0..23){
+                if(dayEventMap.containsKey(i)){
+
+                    items.add((daygridEvent(i, dayEventMap.get(i)!!)))
                 }else{
                     items.add(daygridEvent(i, emptyEvents))
                 }
 
             }
-        }
-        recyclerView_day.adapter = daygridAdapter(items,requireActivity())
-        recyclerView_day.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
+
+            adapter.notifyDataSetChanged()
+
+        })
+
+
+
 
     }
 
@@ -121,7 +164,7 @@ class DayFragment() : Fragment() {
         val sdf = SimpleDateFormat("MM-dd-yyyy")
         cal.add(Calendar.DATE, -1)
         view.findViewById<TextView>(R.id.day_day).text = sdf.format(cal.time)
-        clearEvents(view)
+
 
     }
 
@@ -129,14 +172,10 @@ class DayFragment() : Fragment() {
         val sdf = SimpleDateFormat("MM-dd-yyyy")
         cal.add(Calendar.DATE, 1)
         view.findViewById<TextView>(R.id.day_day).text = sdf.format(cal.time)
-        clearEvents(view)
+
 
     }
 
 
-    fun clearEvents(view:View){
 
-        //val chart = view.findViewById<RelativeLayout>(R.id.day_table)
-        //chart.removeAllViews()
-    }
 }
