@@ -194,9 +194,9 @@ class MainActivity : AppCompatActivity() {
     // you can write your own based on the stuff in repository, should give you all the functionality
     // you need to pass to adapter or whatever you are using
 
-    fun updateEvent(id: Int, year: Int? = null, month: Month? = null, day: Int? = null,
-                    week_number: Int? = null, week_day: DayOfWeek? = null) {
-        eventViewModel!!.updateEvent(id, year, month?.value, day, week_number, week_day?.value)
+    fun updateEvent(id: Int, name: String = "", description: String? = null,  year: Int? = null, month: Month? = null, day: Int? = null,
+                    week_number: Int? = null, week_day: DayOfWeek? = null, start: Int?, end: Int?) {
+        eventViewModel!!.updateEvent(id, name, description, year, month?.value, day, week_number, week_day?.value, start, end)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

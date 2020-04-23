@@ -67,6 +67,19 @@ class EventRepository(private val eventDao: EventDao) {
             currentEvents.value = it
         }
     }
+
+    fun getEventsByThreeDay(year : Int, month : Int, day : Int,
+                            year2 : Int, month2 : Int, day2 : Int,
+                            year3 : Int, month3 : Int, day3 : Int) {
+//        CoroutineScope(Dispatchers.IO).launch {
+//            val result = eventDao!!.getEventsByDay(year, month, day)
+//            currentEvents.value = result.value
+//        }
+        eventDao!!.getEventsByThreeDay(year, month, day, year2, month2, day2,
+            year3, month3, day3).observeOnce {
+            currentEvents.value = it
+        }
+    }
     fun getEventsByWeek(year : Int, month : Int, week : Int) {
 //        CoroutineScope(Dispatchers.IO).launch {
 //            val result = eventDao!!.getEventsByWeek(year, month, week)
@@ -142,9 +155,9 @@ class EventRepository(private val eventDao: EventDao) {
         }
     }
 
-    fun updateEvent(id: Int, year: Int?, month: Int?, day: Int?, week_number: Int?, week_day: Int?) {
+    fun updateEvent(id: Int, name: String, description:String?, year: Int?, month: Int?, day: Int?, week_number: Int?, week_day: Int?, start: Int?, end: Int?) {
         CoroutineScope(Dispatchers.IO).launch {
-            eventDao!!.updateEvent(id, year, month, day, week_number, week_day)
+            eventDao!!.updateEvent(id, name, description, year, month, day, week_number, week_day, start, end)
         }
     }
 

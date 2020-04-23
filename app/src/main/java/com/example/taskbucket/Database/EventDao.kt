@@ -23,12 +23,21 @@ interface EventDao {
 
     @Query("SELECT * from event_table WHERE year = :year")
     fun getEventsByYear(year : Int): LiveData<List<Event>>
+
     @Query("SELECT * from event_table WHERE year = NULL")
     fun getEventsNoBucket(): LiveData<List<Event>>
+
     @Query("SELECT * from event_table WHERE year = :year AND month = :month")
     fun getEventsByMonth(year : Int, month: Int): LiveData<List<Event>>
+
     @Query("SELECT * from event_table WHERE year = :year AND month = :month AND day = :day")
     fun getEventsByDay(year : Int, month: Int, day : Int): LiveData<List<Event>>
+
+    @Query("SELECT * from event_table WHERE (year = :year AND month = :month AND day = :day) OR (year = :year2 AND month = :month2 AND day=:day2) OR (year = :year3 AND month= :month3 AND day = :day3) ")
+    fun getEventsByThreeDay(year : Int, month: Int, day : Int,
+                            year2: Int, month2: Int, day2: Int,
+                            year3:Int, month3:Int, day3:Int): LiveData<List<Event>>
+
     @Query("SELECT * from event_table WHERE year = :year AND month = :month AND week_number = :week_Int")
     fun getEventsByWeek(year : Int, month: Int, week_Int : Int): LiveData<List<Event>>
 
@@ -50,8 +59,9 @@ interface EventDao {
     @Query("DELETE from event_table WHERE year = :year AND month = :month AND week_number = :week_Int")
     fun deleteEventsByWeek(year : Int, month: Int, week_Int : Int)
 
-    @Query("UPDATE event_table SET year = :year AND month = :month AND day = :day AND week_number = :week_Int AND week_day = :week_day WHERE id=:id ")
-    fun updateEvent(id: Int, year: Int?, month: Int?, day: Int?, week_Int: Int?, week_day: Int?)
+    @Query("UPDATE event_table SET year = :year AND month = :month AND day = :day AND week_number = :week_Int AND week_day = :week_day " +
+            "AND name = :name AND description = :description AND start = :start AND end = :end WHERE id=:id ")
+    fun updateEvent(id: Int, name:String, description:String?, year: Int?, month: Int?, day: Int?, week_Int: Int?, week_day: Int?, start: Int?, end: Int?)
 
     @Query("SELECT DISTINCT year FROM event_table WHERE year != NULL")
     fun getAllYears() : LiveData<List<Int>>
