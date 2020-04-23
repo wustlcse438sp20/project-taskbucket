@@ -21,30 +21,44 @@ class EventRepository(private val eventDao: EventDao) {
     val currentEvents: MutableLiveData<List<Event>> = MutableLiveData()
 //val currentEvents: MutableLiveData<List<Event>> = eventDao!!.getAllEvents()
     var yearList: MutableLiveData<List<Int>> = MutableLiveData()
+    var currentProject: MutableLiveData<List<Project>> = MutableLiveData()
+    var lastID : MutableLiveData<Int> = MutableLiveData()
+
+//    var lastQuery = "all"
+//    var lastYear = 0
+//    var lastMonth = 0
+//    var lastDay = 0
+//    var lastWeek = 0
 
     fun insert(event: Event) {
 //        Log.d("event", event.toString())
         CoroutineScope(Dispatchers.IO).launch {
-            eventDao!!.insert(event)
+            eventDao.insert(event)
 //            Log.d("eventRow", eventDao!!.insert(event).toString())
         }
     }
     fun getAll() {
 //        CoroutineScope(Dispatchers.IO).launch {
-            eventDao!!.getAllEvents().observeOnce {
+            eventDao.getAllEvents().observeOnce {
                 currentEvents.value = it
             }
 //        }
     }
+
+    fun getAllLive(): LiveData<List<Event>> = eventDao.getAllEvents()
+    fun getYearLive(year: Int): LiveData<List<Event>> = eventDao.getEventsByYear(year)
+    fun getDayLive(year : Int, month : Int, day : Int): LiveData<List<Event>> = eventDao.getEventsByDay(year, month, day)
+    fun getMonthLive(year : Int, month : Int):  LiveData<List<Event>> = eventDao.getEventsByMonth(year, month)
+    fun getWeekLive(year : Int, month : Int, week : Int): LiveData<List<Event>> = eventDao.getEventsByWeek(year, month, week)
     fun deleteOne(id : Int) {
         CoroutineScope(Dispatchers.IO).launch {
-            eventDao!!.deleteOne(id)
+            eventDao.deleteOne(id)
         }
     }
 
     fun getEventsByYear(year : Int) {
 //        CoroutineScope(Dispatchers.IO).launch {
-            eventDao!!.getEventsByYear(year).observeOnce {
+            eventDao.getEventsByYear(year).observeOnce {
                 currentEvents.value = it
             }
 //        }
@@ -53,7 +67,7 @@ class EventRepository(private val eventDao: EventDao) {
 //        CoroutineScope(Dispatchers.IO).launch {
 //            val result = eventDao!!.getEventsByMonth(year, month)
 //            currentEvents.value = result.value
-        eventDao!!.getEventsByMonth(year, month).observeOnce {
+        eventDao.getEventsByMonth(year, month).observeOnce {
             currentEvents.value = it
         }
 //        }
@@ -63,7 +77,7 @@ class EventRepository(private val eventDao: EventDao) {
 //            val result = eventDao!!.getEventsByDay(year, month, day)
 //            currentEvents.value = result.value
 //        }
-        eventDao!!.getEventsByDay(year, month, day).observeOnce {
+        eventDao.getEventsByDay(year, month, day).observeOnce {
             currentEvents.value = it
         }
     }
@@ -85,7 +99,7 @@ class EventRepository(private val eventDao: EventDao) {
 //            val result = eventDao!!.getEventsByWeek(year, month, week)
 //            currentEvents.value = result.value
 //        }
-        eventDao!!.getEventsByWeek(year, month, week).observeOnce {
+        eventDao.getEventsByWeek(year, month, week).observeOnce {
             currentEvents.value = it
         }
     }
@@ -95,14 +109,14 @@ class EventRepository(private val eventDao: EventDao) {
 //            val result = eventDao!!.getOld(year, day, month)
 //            currentEvents.value = result.value
 //        }
-        eventDao!!.getOld(year, day, month).observeOnce {
+        eventDao.getOld(year, day, month).observeOnce {
             currentEvents.value = it
         }
     }
 
     fun getYears() {
 //        CoroutineScope(Dispatchers.IO).launch {
-        eventDao!!.getAllYears().observeOnce {
+        eventDao.getAllYears().observeOnce {
             yearList.value = it
         }
 //        }
@@ -110,28 +124,28 @@ class EventRepository(private val eventDao: EventDao) {
 
     fun deleteOld(year: Int, day: Int, month: Int) {
         CoroutineScope(Dispatchers.IO).launch {
-            eventDao!!.deleteOld(year, day, month)
+            eventDao.deleteOld(year, day, month)
         }
     }
 
     fun deleteEventsByYear(year : Int) {
         CoroutineScope(Dispatchers.IO).launch {
-            eventDao!!.deleteEventsByYear(year)
+            eventDao.deleteEventsByYear(year)
         }
     }
     fun deleteEventsByMonth(year : Int, month : Int) {
         CoroutineScope(Dispatchers.IO).launch {
-            eventDao!!.deleteEventsByMonth(year, month)
+            eventDao.deleteEventsByMonth(year, month)
         }
     }
     fun deleteEventsByDay(year : Int, month : Int, day : Int) {
         CoroutineScope(Dispatchers.IO).launch {
-            eventDao!!.deleteEventsByDay(year, month, day)
+            eventDao.deleteEventsByDay(year, month, day)
         }
     }
     fun deleteEventsByWeek(year : Int, month : Int, week_number : Int) {
         CoroutineScope(Dispatchers.IO).launch {
-            eventDao!!.deleteEventsByWeek(year, month, week_number)
+            eventDao.deleteEventsByWeek(year, month, week_number)
         }
     }
 
@@ -140,7 +154,7 @@ class EventRepository(private val eventDao: EventDao) {
 //            val result = eventDao!!.getEventsNoBucket()
 //            currentEvents.value = result.value
 //        }
-        eventDao!!.getEventsNoBucket().observeOnce {
+        eventDao.getEventsNoBucket().observeOnce {
             currentEvents.value = it
         }
     }
@@ -150,14 +164,23 @@ class EventRepository(private val eventDao: EventDao) {
 //            val result = eventDao!!.getEventsByProject()
 //            currentEvents.value = result.value
 //        }
-        eventDao!!.getEventsByProject().observeOnce {
+        eventDao.getEventsByProject().observeOnce {
             currentEvents.value = it
         }
     }
 
-    fun updateEvent(id: Int, name: String, description:String?, year: Int?, month: Int?, day: Int?, week_number: Int?, week_day: Int?, start: Int?, end: Int?) {
+    fun updateEvent(id: Int, name: String,
+                    month: Int?,
+                    day: Int?,
+                    year: Int,
+                    start: Int?,
+                    end: Int?,
+                    description: String?,
+                    week_day: Int?,
+                    week_number: Int?, // 1 for week 1 (1-7), 2 for week 2 (8-14), etc.
+                    project_id: Int?) {
         CoroutineScope(Dispatchers.IO).launch {
-            eventDao!!.updateEvent(id, name, description, year, month, day, week_number, week_day, start, end)
+            eventDao.updateEvent(id, name, month, day, year, start, end, description, week_day, week_number, project_id)
         }
     }
 
@@ -169,5 +192,54 @@ class EventRepository(private val eventDao: EventDao) {
             }
         })
     }
+    fun getOneEvent(id: Int){
+        eventDao.getOneEvent(id).observeOnce {
+            currentEvents.value = it
+        }
+    }
+
+    fun getOneProject(id: Int) {
+        eventDao.getOneProject(id).observeOnce {
+            currentProject.value = it
+        }
+    }
+
+    fun getProjects() {
+        eventDao.getAllProjects().observeOnce {
+            currentProject.value = it
+        }
+    }
+
+    fun getLastId() {
+        eventDao.getLastId().observeOnce {
+            lastID.value = it
+        }
+    }
+
+    fun insertProject(event: Project) {
+//        Log.d("event", event.toString())
+        CoroutineScope(Dispatchers.IO).launch {
+            eventDao.insertProject(event)
+//            Log.d("eventRow", eventDao!!.insert(event).toString())
+        }
+    }
+
+    fun deleteOneProject(id : Int) {
+        CoroutineScope(Dispatchers.IO).launch {
+            eventDao.deleteOneProject(id)
+        }
+    }
+
+//    fun lastQueryParse() {
+//        when(lastQuery) {
+//            "all" -> getAll()
+//            "year" -> getEventsByYear(lastYear)
+//            "month" -> getEventsByMonth(lastYear, lastMonth)
+//            "day" -> getEventsByDay(lastYear, lastMonth, lastDay)
+//            "week" -> getEventsByWeek(lastYear, lastMonth, lastWeek)
+//            "project" -> getEventsByProject()
+//            "nobucket" -> getEventsNoBucket()
+//        }
+//    }
 
 }

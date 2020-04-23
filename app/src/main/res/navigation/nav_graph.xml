@@ -9,7 +9,14 @@
         android:id="@+id/bucketFragment2"
         android:name="com.example.taskbucket.fragments.BucketFragment"
         android:label="fragment_bucket"
-        tools:layout="@layout/fragment_bucket" />
+        tools:layout="@layout/fragment_bucket" >
+        <action
+            android:id="@+id/action_bucketFragment2_to_addEventDialogFragment"
+            app:destination="@id/addEventDialogFragment" />
+        <action
+            android:id="@+id/action_bucketFragment2_to_addProjectDialogFragment"
+            app:destination="@id/addProjectDialogFragment" />
+    </fragment>
     <fragment
         android:id="@+id/calendarFragment2"
         android:name="com.example.taskbucket.fragments.CalendarFragment"
@@ -20,4 +27,18 @@
         android:name="com.example.taskbucket.fragments.ProjectFragment"
         android:label="fragment_project"
         tools:layout="@layout/fragment_project" />
+    <dialog
+        android:id="@+id/addEventDialogFragment"
+        android:name="com.example.taskbucket.fragments.addEventDialogFragment"
+        android:label="addEventDialogFragment"
+        tools:layout="@layout/dialog_fragment_add_event"/>
+    <dialog
+        android:id="@+id/addProjectDialogFragment"
+        android:name="com.example.taskbucket.fragments.addProjectDialogFragment"
+        android:label="addProjectDialogFragment"
+        tools:layout="@layout/dialog_fragment_add_project"/>
+    <action
+        android:id="@+id/action_global_addProjectDialogFragment"
+        app:destination="@id/addProjectDialogFragment"
+        app:popUpTo="@id/bucketFragment2" />
 </navigation>

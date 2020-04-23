@@ -3,4 +3,7 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="bucketHighlight">#63E20B</color>
+    <color name="transparent">#00F8F6F7</color>
+    <color name="empty"></color>
 </resources>

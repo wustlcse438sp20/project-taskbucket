@@ -1,5 +1,6 @@
 package com.example.databasefinal
 
+import androidx.annotation.NonNull
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.room.Dao
@@ -59,11 +60,36 @@ interface EventDao {
     @Query("DELETE from event_table WHERE year = :year AND month = :month AND week_number = :week_Int")
     fun deleteEventsByWeek(year : Int, month: Int, week_Int : Int)
 
-    @Query("UPDATE event_table SET year = :year AND month = :month AND day = :day AND week_number = :week_Int AND week_day = :week_day " +
-            "AND name = :name AND description = :description AND start = :start AND end = :end WHERE id=:id ")
-    fun updateEvent(id: Int, name:String, description:String?, year: Int?, month: Int?, day: Int?, week_Int: Int?, week_day: Int?, start: Int?, end: Int?)
+    @Query("UPDATE event_table SET year = :year, month = :month, day = :day, week_number = :week_number , week_day = :week_day , name = :name , start = :start , `end` = :end , description = :description , week_day = :week_day , project_id = :project_id WHERE id=:id ")
+    fun updateEvent(id: Int, name: String,
+                    month: Int?,
+                    day: Int?,
+                    year: Int,
+                    start: Int?,
+                    end: Int?,
+                    description: String?,
+                    week_day: Int?,
+                    week_number: Int?, // 1 for week 1 (1-7), 2 for week 2 (8-14), etc.
+                    project_id: Int?)
 
     @Query("SELECT DISTINCT year FROM event_table WHERE year != NULL")
     fun getAllYears() : LiveData<List<Int>>
 
+    @Query("SELECT * FROM event_table WHERE id = :id")
+    fun getOneEvent(id: Int) : LiveData<List<Event>>
+
+
+    // Project table
+    @Query("SELECT * from project_table ORDER BY name ASC")
+    fun getAllProjects(): LiveData<List<Project>>
+    @Query("SELECT * FROM project_table WHERE id = :id")
+    fun getOneProject(id: Int) : LiveData<List<Project>>
+
+    @Query("SELECT MAX(id) from project_table")
+    fun getLastId() : LiveData<Int>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertProject(project: Project) : Long
+    @Query("DELETE FROM project_table WHERE id = :id ")
+    fun deleteOneProject(id : Int)
 }

@@ -6,15 +6,25 @@ import android.util.Log
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import android.view.Menu
+import android.view.MenuItem
+import android.view.Window
+import android.view.WindowManager
+import android.widget.ImageButton
 import android.widget.Toolbar
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.view.ActionMode
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.example.databasefinal.Event
+import com.example.databasefinal.Project
 import com.example.taskbucket.R
 import com.example.taskbucket.viewmodels.EventViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationView
+import kotlinx.android.synthetic.main.sidebar.*
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -83,10 +93,16 @@ fun dataDividerYear(yearList: ArrayList<Int>, events: ArrayList<Event>) : ArrayL
 class MainActivity : AppCompatActivity() {
     lateinit var mBottomNav: BottomNavigationView
     lateinit var mDrawerLayout: DrawerLayout
+    lateinit var recyclerView: RecyclerView
+    lateinit var imageButton: ImageButton
     lateinit var toolbar: androidx.appcompat.widget.Toolbar
     private var eventViewModel: EventViewModel? = null
     private var uniqueYears: ArrayList<Int> = ArrayList()
     private var currentEvents: ArrayList<Event> = ArrayList()
+    lateinit var NavigationView: NavigationView
+    private var currentProjects: ArrayList<Project> = ArrayList()
+    private var lastProjectId : Int = 0
+    private var done: Boolean = false
     val date = LocalDateTime.now()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,15 +110,31 @@ class MainActivity : AppCompatActivity() {
         mBottomNav = findViewById(R.id.bottom_nav)
         mDrawerLayout = findViewById(R.id.drawer_layout)
         toolbar = findViewById(R.id.toolbar)
+        NavigationView = findViewById(R.id.nav_view)
+        recyclerView = findViewById(R.id.sidebar_rv)
+        imageButton = findViewById(R.id.sidebar_ib_add)
+        //set up bottom nav
         val controller = findNavController(R.id.nav_host_fragment)
         mBottomNav.setupWithNavController(controller)
+
+        //set up navigation drawer
         val appBarConfiguration = AppBarConfiguration(controller.graph, mDrawerLayout)
+        val drawerNavController = findNavController(R.id.nav_host_fragment)
+        NavigationView.setupWithNavController(drawerNavController)
         setSupportActionBar(toolbar)
+
+        val toggle = ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close)
+        mDrawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
         supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        //supportActionBar!!.setDisplayShowHomeEnabled(true)
+        sidebar_ib_add.setOnClickListener {
+            controller.navigate(R.id.action_global_addProjectDialogFragment)
+        }
 
-        //setActionBar(toolbar)
+
+
         eventViewModel = ViewModelProvider(this).get(EventViewModel::class.java)
 //        eventViewModel!!.getYears()
 //        eventViewModel!!.getEventsNoBucket()
@@ -113,7 +145,18 @@ class MainActivity : AppCompatActivity() {
                 currentEvents.addAll(events)
             }
             //adapter.notifyDataSetChanged()
-//            Log.d("current", currentEvents.size.toString())
+//            Log.d("current", currentEvents.toString())
+//            testForUpdate()
+        })
+        eventViewModel!!.currentProjects.observe(this, Observer { events ->
+            // Update the cached copy of the words in the adapter.
+            if(events != null) {
+                currentProjects.clear()
+                currentProjects.addAll(events)
+            }
+            //adapter.notifyDataSetChanged()
+//            Log.d("current", currentProjects.toString())
+//            testForUpdate()
         })
         eventViewModel!!.yearList.observe(this, Observer { events ->
             // Update the cached copy of the words in the adapter.
@@ -123,18 +166,19 @@ class MainActivity : AppCompatActivity() {
             }
             //adapter.notifyDataSetChanged()
         })
-        eventViewModel!!.getAll()
-        insertWithOptionals(name = "test", year = 1998)
-//        yearBucket(2001)
-        eventViewModel!!.insert(Event(name = "help", year = 2001))
-
-
-//        yearBucket(2001)
-        eventViewModel!!.insert(Event(name = "testerino", year = 2001))
-//        yearBucket(1998)
-        eventViewModel!!.getAll()
-
-
+        eventViewModel!!.lastID.observe(this, Observer { events ->
+            // Update the cached copy of the words in the adapter.
+            if(events != null) {
+                lastProjectId = events
+            }
+            //adapter.notifyDataSetChanged()
+//            Log.d("currentLastID", lastProjectId.toString())
+        })
+//        eventViewModel!!.getAll()
+//        eventViewModel!!.insertProject(Project("hello"))
+//        eventViewModel!!.insertProject(Project("goodbye"))
+//        eventViewModel!!.getProjects()
+//        eventViewModel!!.getLastID()
     }
 
 //    override fun onStart() {
@@ -194,13 +238,45 @@ class MainActivity : AppCompatActivity() {
     // you can write your own based on the stuff in repository, should give you all the functionality
     // you need to pass to adapter or whatever you are using
 
-    fun updateEvent(id: Int, name: String = "", description: String? = null,  year: Int? = null, month: Month? = null, day: Int? = null,
-                    week_number: Int? = null, week_day: DayOfWeek? = null, start: Int?, end: Int?) {
-        eventViewModel!!.updateEvent(id, name, description, year, month?.value, day, week_number, week_day?.value, start, end)
+    fun updateEvent(event: Event, name: String = "",
+                    month: Int? = -1,
+                    day: Int? = -1,
+                    year: Int = -1,
+                    start: Int? = -1,
+                    end: Int? = -1,
+                    description: String? = "",
+                    week_day: Int? = -1,
+                    week_number: Int? = -1, // 1 for week 1 (1-7), 2 for week 2 (8-14), etc.
+                    project_id: Int? = -1) {
+//        Log.d("currentCheck", (year!=-1).toString())
+        eventViewModel!!.updateEvent(event.id,
+            if(name != "") name else event.name,
+            if(month != -1) month else event.month,
+            if(day != -1) day else event.day,
+            if(year != -1) year else event.year,
+            if(start != -1) start else event.start,
+            if(end != -1) end else event.end,
+            if(description != "") description else event.description,
+            if(week_day != -1) week_day else event.week_day,
+            if(week_number != -1) week_number else event.week_number,
+            if(project_id != -1) project_id else event.project_id)
+    }
+
+    fun getLastProjectID() {
+        eventViewModel!!.getLastID()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.bucket_toolbar, menu)
         return super.onCreateOptionsMenu(menu)
     }
+
+//    fun testForUpdate() {
+//        if(!done) {
+//            val e = currentEvents[0]
+//            Log.d("currentSingleEvent", e.toString())
+//            updateEvent(e, name = "Updated!", year = 2001)
+//            done = false
+//        }
+//    }
 }

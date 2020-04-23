@@ -4,9 +4,51 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.BucketFragment">
+    tools:context=".fragments.BucketFragment"
+    android:animateLayoutChanges="true"
+    >
 
-    <!-- TODO: Update blank fragment layout -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/bucket_tablayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.TabLayout.Colored"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/ic_letter_a"
+            android:layout_margin="2dp"
+            android:text="All" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/ic_today"
+            android:layout_margin="2dp"
+            android:text="Day" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/ic_calendar_week"
+            android:text="Week" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/ic_calendar_month"
+            android:text="Month" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/ic_year"
+            android:text="Year" />
+    </com.google.android.material.tabs.TabLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"
@@ -25,8 +67,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="textView3,textView,textView4,textView2"
-         />
+        app:constraint_referenced_ids="bucket_tablayout" />
 
     <ImageButton
         android:id="@+id/bucketFilter1"
@@ -139,97 +180,39 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/bucket3"
+        app:layout_constraintEnd_toStartOf="@+id/bucket_rv_buckets"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/top_bar_barrier"
+        app:layout_constraintVertical_bias="1.0"
         app:layout_constraintVertical_weight="1" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/filter_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="visible"
+        android:visibility="gone"
         app:constraint_referenced_ids="bucketFilter3,textView3,bucketFilter2,bucketFilter1,textView,textView4,bucketFilter4,textView2" />
 
-    <Button
-        android:id="@+id/bucket1"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/bucket_rv_buckets"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="8dp"
-        android:drawableTop="@drawable/ic_free_breakfast_black_24dp"
-        android:src="@drawable/ic_free_breakfast_black_24dp"
-        android:text="Bucket 1"
-        app:layout_constraintBottom_toTopOf="@+id/bucket2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/barrier_side_bucket"
-        app:layout_constraintTop_toBottomOf="@id/top_bar_barrier" />
-
-    <Button
-        android:id="@+id/bucket2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:drawableTop="@drawable/ic_free_breakfast_black_24dp"
-        android:src="@drawable/ic_free_breakfast_black_24dp"
-        android:text="Bucket 2"
-        app:layout_constraintBottom_toTopOf="@+id/bucket3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/barrier_side_bucket"
-        app:layout_constraintTop_toBottomOf="@+id/bucket1" />
-
-    <Button
-        android:id="@+id/bucket3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:drawableTop="@drawable/ic_free_breakfast_black_24dp"
-        android:src="@drawable/ic_free_breakfast_black_24dp"
-        android:text="Bucket 3"
-        app:layout_constraintBottom_toTopOf="@+id/bucket4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/barrier_side_bucket"
-        app:layout_constraintTop_toBottomOf="@+id/bucket2" />
-
-    <Button
-        android:id="@+id/bucket4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:drawableTop="@drawable/ic_free_breakfast_black_24dp"
-        android:src="@drawable/ic_free_breakfast_black_24dp"
-        android:text="Bucket 4"
-        app:layout_constraintBottom_toTopOf="@+id/bucket5"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/barrier_side_bucket"
-        app:layout_constraintTop_toBottomOf="@+id/bucket3" />
-
-    <Button
-        android:id="@+id/bucket5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:drawableTop="@drawable/ic_free_breakfast_black_24dp"
-        android:src="@drawable/ic_free_breakfast_black_24dp"
-        android:text="Bucket 5"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/barrier_side_bucket"
-        app:layout_constraintTop_toBottomOf="@+id/bucket4" />
+        app:layout_constraintStart_toEndOf="@+id/barrier_side_bucket"
+        app:layout_constraintTop_toBottomOf="@+id/top_bar_barrier"
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/bucket_group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        app:constraint_referenced_ids="bucket5,bucket3,bucket4,bucket2,bucket1" />
+        />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier_side_bucket"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="start"
-        app:constraint_referenced_ids="bucket1" />
+        app:constraint_referenced_ids="bucket_rv_buckets" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
