@@ -156,7 +156,7 @@ class BucketFragment : Fragment() {
                             if(view.tag == "bucket"){
                                 //view.background.setTint(resources.getColor(R.color.empty, null))
                                 view.background.clearColorFilter()
-                                (view as MaterialCardView).setCardBackgroundColor(resources.getColor(R.color.colorPrimaryDark, null))
+                                (view as MaterialCardView).setCardBackgroundColor(resources.getColor(R.color.bucketNormal, null))
                             }
                             true
                         }
@@ -166,6 +166,7 @@ class BucketFragment : Fragment() {
                             Log.d(TAG, "onViewCreated: drag dropped " + bucket.toString())
                             if(view.tag == "bucket"){
                                 view.background.clearColorFilter()
+                                (view as MaterialCardView).setCardBackgroundColor(resources.getColor(R.color.bucketNormal, null))
                                 (view as MaterialCardView).setCardBackgroundColor(resources.getColor(R.color.colorPrimaryDark, null))
                                 val newEvent = Event(draggedEvent.name, bucket.month, bucket.day, bucket.year!!, draggedEvent.start, draggedEvent.end,draggedEvent.description, project_id = draggedEvent.project_id)
                                 Log.d(TAG, "onViewCreated: drag dropped" + newEvent.toString())
@@ -221,7 +222,27 @@ class BucketFragment : Fragment() {
             }
 
             override fun onTabUnselected(p0: TabLayout.Tab?) {
-                true
+                when(p0!!.position){
+                    0 -> {
+                        Log.d(TAG, "onTabSelected: getting all events")
+                        currentEventListener = eventViewModel.allEventsLive.removeObservers(viewLifecycleOwner)
+                    }
+                    1 -> {
+                        currentEventListener = eventViewModel.dayEventsLive.removeObservers(viewLifecycleOwner)
+
+                    }
+                    2 -> {
+                        currentEventListener = eventViewModel.weekEventsLive.removeObservers(viewLifecycleOwner)
+
+                    }
+                    3 -> {
+                        currentEventListener = eventViewModel.monthEventsLive.removeObservers(viewLifecycleOwner)
+
+                    }
+                    4 -> {
+                        currentEventListener = eventViewModel.yearEventsLive.removeObservers(viewLifecycleOwner)
+                    }
+                }
             }
 
             override fun onTabSelected(p0: TabLayout.Tab?) {
