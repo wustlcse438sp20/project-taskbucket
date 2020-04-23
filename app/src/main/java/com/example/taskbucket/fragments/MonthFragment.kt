@@ -45,16 +45,17 @@ class MonthFragment : Fragment() {
         initMonth()
 
         month_prev_button.setOnClickListener {
+            viewModel.currentEvents.removeObservers(viewLifecycleOwner)
             prevMonth(view)
         }
 
         month_next_button.setOnClickListener {
+            viewModel.currentEvents.removeObservers(viewLifecycleOwner)
             nextMonth(view)
         }
     }
 
     fun initMonth() {
-        println("Called")
         var sdf = SimpleDateFormat("MMMM-yyyy")
 
         month_title.text = sdf.format(cal.time)
@@ -65,7 +66,9 @@ class MonthFragment : Fragment() {
         cal.set(Calendar.WEEK_OF_MONTH, 1)
         cal.set(Calendar.DAY_OF_WEEK, 1)
 
+
         viewModel.currentEvents.observe(viewLifecycleOwner, Observer {
+
             currentEvents.addAll(ArrayList(it))
             currentEvents.sortBy { it.day }
 
@@ -92,39 +95,84 @@ class MonthFragment : Fragment() {
             adapter.notifyDataSetChanged()
         })
 
+        cal.set(Calendar.MONTH, month-1)
+    }
+
+    fun updateMonth() {
+        dateList.clear()
+        var sdf = SimpleDateFormat("MMMM-yyyy")
+
+        month_title.text = sdf.format(cal.time)
+        sdf = SimpleDateFormat("dd")
+        var currentEvents: ArrayList<Event> = ArrayList()
+        viewModel.getEventsByMonth(year, month)
+
+        cal.set(Calendar.WEEK_OF_MONTH, 1)
+        cal.set(Calendar.DAY_OF_WEEK, 1)
+
+
+        viewModel.currentEvents.observe(viewLifecycleOwner, Observer {
+
+            currentEvents.addAll(ArrayList(it))
+            currentEvents.sortBy { it.day }
+
+
+
+            for (i in 0..41) {
+                var hasEvent = false
+                var inMonth = false
+                if (cal.get(Calendar.MONTH) == month) {
+                    inMonth = true
+                    var dateEvents = currentEvents.filter { event -> event.day == cal.get(Calendar.DATE) }
+                    if (dateEvents.isNotEmpty()) {
+
+                        hasEvent = true
+                        currentEvents.removeAll(dateEvents)
+                    }
+                }
+
+                dateList.add(monthEvent(sdf.format(cal.time), hasEvent, inMonth))
+                cal.add(Calendar.DAY_OF_YEAR, 1)
+            }
+
+
+            adapter.notifyDataSetChanged()
+        })
+
+        viewModel.currentEvents.removeObservers(viewLifecycleOwner)
+        cal.set(Calendar.MONTH, month)
     }
 
     fun prevMonth(view: View) {
-        month -= 1
 
-        if (month < -1) {
-            month = 10
+//
+        if (month >= 11 ) {
             year -= 1
-
+            println("YEAR: " + year)
             cal.set(Calendar.YEAR, year)
         }
+        println("Calendar.MONTH: " + month)
+        cal.add(Calendar.MONTH, -1)
+            month = cal.get(Calendar.MONTH)
+        println("Calendar.MONTH: " + month)
 
-        cal.set(Calendar.MONTH, month)
-        dateList.clear()
-        adapter.notifyDataSetChanged()
 
-
-
-        initMonth()
+        updateMonth()
     }
 
 
     fun nextMonth(view: View) {
-        month += 1
-        if (month >= 12) {
-            month = 0
-            year += 1
+        if(month == 11){
             cal.set(Calendar.YEAR, year)
+            year += 1
         }
-        cal.set(Calendar.MONTH, month)
-        dateList.clear()
-        adapter.notifyDataSetChanged()
-        initMonth()
+        println("Calendar.MONTH: " + month)
+        cal.add(Calendar.MONTH, 1)
+        month = cal.get(Calendar.MONTH)
+        println("Calendar.MONTH: " + month)
+
+
+        updateMonth()
     }
 
 }
