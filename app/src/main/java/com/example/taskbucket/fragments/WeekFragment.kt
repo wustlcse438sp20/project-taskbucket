@@ -107,6 +107,7 @@ class WeekFragment : Fragment() {
 
             currentEvents.addAll(ArrayList(it))
             currentEvents.sortBy { it.start }
+            currentEvents = currentEvents.filter { it.start.toString() != "null" } as ArrayList<Event>
 
 
             for (event in currentEvents) {

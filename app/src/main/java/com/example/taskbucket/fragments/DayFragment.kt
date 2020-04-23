@@ -95,6 +95,7 @@ class DayFragment() : Fragment() {
             items.clear()
             currentEvents = ArrayList(it)
             currentEvents.sortBy { it.start }
+            currentEvents = currentEvents.filter { it.start.toString() != "null" } as ArrayList<Event>
 
 
 
