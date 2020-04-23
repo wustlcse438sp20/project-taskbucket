@@ -14,6 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
+import java.util.*
 
 class EventViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -24,15 +25,26 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
     val yearList: LiveData<List<Int>>
     val currentProjects: LiveData<List<Project>>
     val lastID : LiveData<Int>
+    val allEventsLive: LiveData<List<Event>>
+    val yearEventsLive: LiveData<List<Event>>
+    val monthEventsLive: LiveData<List<Event>>
+    val dayEventsLive: LiveData<List<Event>>
+    val weekEventsLive: LiveData<List<Event>>
 
     init {
         val eventsDao = EventDatabase.getDatabase(application).eventDao()
+        val calendar = Calendar.getInstance()
         repository = EventRepository(eventsDao)
         oldEvents = repository.oldEvents
         currentEvents = repository.currentEvents
         yearList = repository.yearList
         currentProjects = repository.currentProject
         lastID = repository.lastID
+        allEventsLive = repository.getAllLive()
+        yearEventsLive = repository.getYearLive(calendar.get(Calendar.YEAR))
+        monthEventsLive = repository.getMonthLive(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH))
+        dayEventsLive = repository.getDayLive(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
+        weekEventsLive = repository.getWeekLive(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.WEEK_OF_MONTH))
     }
     fun insert(event: Event) = viewModelScope.launch {
         repository.insert(event)

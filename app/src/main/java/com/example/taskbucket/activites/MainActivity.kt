@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModelProvider
 import android.view.Menu
 import android.view.MenuItem
 import android.view.Window
+import android.view.WindowManager
+import android.widget.ImageButton
 import android.widget.Toolbar
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.view.ActionMode
@@ -15,12 +17,14 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.example.databasefinal.Event
 import com.example.databasefinal.Project
 import com.example.taskbucket.R
 import com.example.taskbucket.viewmodels.EventViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
+import kotlinx.android.synthetic.main.sidebar.*
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -89,6 +93,8 @@ fun dataDividerYear(yearList: ArrayList<Int>, events: ArrayList<Event>) : ArrayL
 class MainActivity : AppCompatActivity() {
     lateinit var mBottomNav: BottomNavigationView
     lateinit var mDrawerLayout: DrawerLayout
+    lateinit var recyclerView: RecyclerView
+    lateinit var imageButton: ImageButton
     lateinit var toolbar: androidx.appcompat.widget.Toolbar
     private var eventViewModel: EventViewModel? = null
     private var uniqueYears: ArrayList<Int> = ArrayList()
@@ -105,6 +111,8 @@ class MainActivity : AppCompatActivity() {
         mDrawerLayout = findViewById(R.id.drawer_layout)
         toolbar = findViewById(R.id.toolbar)
         NavigationView = findViewById(R.id.nav_view)
+        recyclerView = findViewById(R.id.sidebar_rv)
+        imageButton = findViewById(R.id.sidebar_ib_add)
         //set up bottom nav
         val controller = findNavController(R.id.nav_host_fragment)
         mBottomNav.setupWithNavController(controller)
@@ -121,6 +129,11 @@ class MainActivity : AppCompatActivity() {
 
         supportActionBar!!.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        sidebar_ib_add.setOnClickListener {
+            controller.navigate(R.id.action_global_addProjectDialogFragment)
+        }
+
+
 
         eventViewModel = ViewModelProvider(this).get(EventViewModel::class.java)
 //        eventViewModel!!.getYears()

@@ -44,6 +44,12 @@ class EventRepository(private val eventDao: EventDao) {
             }
 //        }
     }
+
+    fun getAllLive(): LiveData<List<Event>> = eventDao.getAllEvents()
+    fun getYearLive(year: Int): LiveData<List<Event>> = eventDao.getEventsByYear(year)
+    fun getDayLive(year : Int, month : Int, day : Int): LiveData<List<Event>> = eventDao.getEventsByDay(year, month, day)
+    fun getMonthLive(year : Int, month : Int):  LiveData<List<Event>> = eventDao.getEventsByMonth(year, month)
+    fun getWeekLive(year : Int, month : Int, week : Int): LiveData<List<Event>> = eventDao.getEventsByWeek(year, month, week)
     fun deleteOne(id : Int) {
         CoroutineScope(Dispatchers.IO).launch {
             eventDao.deleteOne(id)

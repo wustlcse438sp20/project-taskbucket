@@ -18,9 +18,45 @@ class taskAdapter(val clickListener: eventClickListener): ListAdapter<Event, tas
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
         val taskDescription: TextView = view.findViewById(R.id.task_description)
         val checkBox: CheckBox = view.findViewById(R.id.checkBox)
+        val day: TextView = view.findViewById(R.id.task_day)
+        val week: TextView = view.findViewById(R.id.task_week)
+        val month: TextView = view.findViewById(R.id.task_Month)
+        val year: TextView = view.findViewById(R.id.task_year)
+
+
         val view = view
         fun bind(Event: Event, eventClickListener: eventClickListener){
             taskDescription.text = Event.name
+            checkBox.isChecked = false
+
+            if(Event.day.toString() != "null" && Event.day.toString() != "-1"){
+                day.visibility = View.VISIBLE
+                day.text =  "Day: " + Event.day.toString()
+            }else{
+                day.visibility = View.GONE
+            }
+
+            if(Event.week_number.toString() != "null" && Event.week_number.toString() != "-1"){
+                week.visibility = View.VISIBLE
+                week.text =  "Week: " + Event.week_number.toString()
+            }else{
+                week.visibility = View.GONE
+            }
+
+            if(Event.year.toString() != "null" && Event.year.toString() != "-1"){
+                year.visibility = View.VISIBLE
+                year.text =  "Year: " + Event.year.toString()
+            }else{
+                year.visibility = View.GONE
+            }
+
+            if(Event.month.toString() != "null" && Event.month.toString() != "-1"){
+                month.visibility = View.VISIBLE
+                month.text =  "Month: " + Event.month.toString()
+            }else{
+                month.visibility = View.GONE
+            }
+
             this.view.setOnClickListener {
                 eventClickListener.onClick(Event, it)
             }
@@ -52,7 +88,7 @@ class taskAdapter(val clickListener: eventClickListener): ListAdapter<Event, tas
         }
 
         override fun areContentsTheSame(oldItem: Event, newItem: Event): Boolean {
-            return oldItem.id == newItem.id
+            return oldItem == newItem
         }
 
     }

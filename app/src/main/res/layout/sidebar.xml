@@ -17,9 +17,10 @@
     <TextView
         android:id="@+id/tv_add_project"
         android:layout_width="0dp"
-        android:layout_height="36dp"
+        android:layout_height="wrap_content"
         android:text="Projects"
         android:textSize="24sp"
+        android:padding="10dp"
         app:layout_constraintEnd_toStartOf="@+id/sidebar_ib_add"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,17 +29,27 @@
     <ImageButton
         android:id="@+id/sidebar_ib_add"
         android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_height="0dp"
         android:background="@color/transparent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@+id/tv_add_project"
         app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintBottom_toBottomOf="@+id/sidebar_barrier1"
         tools:src="@drawable/ic_add_black_24dp" />
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/sidebar_barrier1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="tv_add_project" />
+
+
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/sidebar_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_add_project"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sidebar_barrier1" />
 </androidx.constraintlayout.widget.ConstraintLayout>
