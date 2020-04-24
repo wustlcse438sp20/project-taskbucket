@@ -178,7 +178,7 @@ class BucketFragment : Fragment() {
                                 //(view as MaterialCardView).setCardBackgroundColor(resources.getColor(R.color.colorPrimaryDark, null))
                                 val newEvent = Event(draggedEvent.name, bucket.month, bucket.day, bucket.year!!, draggedEvent.start, draggedEvent.end,draggedEvent.description, project_id = draggedEvent.project_id)
                                 Log.d(TAG, "onViewCreated: drag dropped" + newEvent.toString())
-                                eventViewModel.updateEvent(id = draggedEvent.id, name = draggedEvent.name, month = bucket.month, week_number = bucket.week, week_day = draggedEvent.week_day, day =  bucket.day, year = bucket.year!!, start = draggedEvent.start, end = draggedEvent.end, description = draggedEvent.description, project_id = draggedEvent.project_id)
+                                eventViewModel.updateEvent(id = draggedEvent.id, name = draggedEvent.name, month = bucket.month, week_number = bucket.week, week_day = draggedEvent.week_day, day =  bucket.day, year = bucket.year!!, start = 600, end = 800, description = draggedEvent.description, project_id = draggedEvent.project_id)
                                 //runFilter()
                                 //view.background.setTint(resources.getColor(R.color.colorPrimaryDark, null))
                             }
