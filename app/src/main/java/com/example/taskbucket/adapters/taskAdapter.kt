@@ -52,7 +52,7 @@ class taskAdapter(val clickListener: eventClickListener): ListAdapter<Event, tas
 
             if(Event.month.toString() != "null" && Event.month.toString() != "-1"){
                 month.visibility = View.VISIBLE
-                month.text =  "Month: " + Event.month.toString()
+                month.text =  "Month: " + (Event.month!! + 1).toString()
             }else{
                 month.visibility = View.GONE
             }

@@ -111,10 +111,11 @@ class WeekFragment : Fragment() {
 
 
             for (event in currentEvents) {
+                var tempEvents: ArrayList<Event> = currentEvents.clone() as ArrayList<Event>
                 var currentHour = event.start!! / 60
                 var currentHourEvents: ArrayList<Event> =
-                    currentEvents.filter { e: Event -> (e.start!! / 60 == currentHour) } as ArrayList<Event>
-                currentEvents.removeAll(currentHourEvents)
+                    tempEvents.filter { e: Event -> (e.start!! / 60 == currentHour) } as ArrayList<Event>
+                tempEvents.removeAll(currentHourEvents)
                 var i=0
                 when (event.day){
                     cal.get(Calendar.DATE) ->{
