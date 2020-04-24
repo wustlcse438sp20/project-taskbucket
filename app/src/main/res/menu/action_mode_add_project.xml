@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/openwide"
-        android:icon="@drawable/ic_free_breakfast_black_24dp"
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/project_add"
+        android:icon="@drawable/ic_check_black_24dp"
         android:title="Bucket"
+        app:showAsAction="always"
         />
 
 </menu>

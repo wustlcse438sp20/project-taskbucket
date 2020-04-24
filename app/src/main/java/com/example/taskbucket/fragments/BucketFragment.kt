@@ -15,6 +15,7 @@ import androidx.constraintlayout.widget.Group
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,6 +24,7 @@ import com.example.databasefinal.Event
 import com.example.taskbucket.R
 import com.example.taskbucket.adapters.TaskItem
 import com.example.taskbucket.adapters.bucketAdapter
+import com.example.taskbucket.adapters.projectAdapter
 import com.example.taskbucket.adapters.taskAdapter
 import com.example.taskbucket.util.BucketInstance
 import com.example.taskbucket.util.*
@@ -30,8 +32,10 @@ import com.example.taskbucket.viewmodels.EventViewModel
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.dialog_add_task.view.*
 import kotlinx.android.synthetic.main.fragment_bucket.*
+import kotlinx.android.synthetic.main.sidebar.*
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.concurrent.schedule
@@ -48,15 +52,19 @@ class BucketFragment : Fragment() {
     lateinit var drawerLayout: DrawerLayout
     lateinit var draggedEvent: Event
     lateinit var bucketFilters: ArrayList<ImageButton>
+    lateinit var sidebarImage: ImageView
     lateinit var viewModel: EventViewModel
     lateinit var addProject: ImageButton
     lateinit var filter: String
+    lateinit var sidebarRV: RecyclerView
+
     var items = arrayListOf<TaskItem>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //(activity as AppCompatActivity).supportActionBar?
         setHasOptionsMenu(true)
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
+        sidebarRV = activity!!.findViewById<RecyclerView>(R.id.sidebar_rv)
     }
 
     override fun onCreateView(
@@ -192,23 +200,6 @@ class BucketFragment : Fragment() {
         floatingActionButton.setOnClickListener {
             findNavController().navigate(R.id.action_bucketFragment2_to_addEventDialogFragment)
         }
-        //eventViewModel.getAll()
-//        eventViewModel.currentEvents.observe(viewLifecycleOwner, Observer {
-//            Log.d(TAG, "onViewCreated: size of all events: " + it.size)
-//            when(filter){
-//                "All" ->{}
-//                "Day" ->{}
-//                "Week" ->{}
-//                "Month" ->{}
-//                "Year" ->{}
-//            }
-//            adapter.submitList(it)
-//        })
-
-//        eventViewModel.allEventsLive.observe(viewLifecycleOwner, Observer {
-//            Log.d(TAG, "onViewCreated: all events live observed")
-//            adapter.submitList(it)
-//        })
 
         var currentEventListener = eventViewModel.allEventsLive.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
@@ -293,24 +284,24 @@ class BucketFragment : Fragment() {
             }
 
         })
+        //sidebarRV = view.findViewById(R.id.recyclerView)
+        sidebarRV.layoutManager = LinearLayoutManager(requireContext())
+        val pAdapter = projectAdapter(projectAdapter.eventClickListener{
+                item, view ->
+            Log.d(TAG, "onViewCreated: "  + item.name)
+            eventViewModel.updateProject(item)
+            findNavController().navigate(R.id.action_global_projectFragment)
 
-    }
+        })
+        sidebarRV.adapter = pAdapter
+        //eventViewModel = ViewModelProvider(this).get(EventViewModel::class.java)
+        eventViewModel!!.projectsLive.observe(viewLifecycleOwner, Observer {
+            Log.d(TAG, "onCreate: " + "projects changed")
+            //eventViewModel.deleteOneProject(it[0].id)
+            pAdapter.submitList(it)
+            Log.d(TAG, "onCreate: " + pAdapter.itemCount)
+        })
 
-    fun addTaskDialog(){
-        val dialogView = LayoutInflater.from(requireActivity()).inflate(R.layout.dialog_add_task, null)
-        val mBuilder = AlertDialog.Builder(requireActivity())
-            .setView(dialogView)
-            .setTitle("Add To Playlist")
-            .setPositiveButton("Confirm", DialogInterface.OnClickListener { dialog, switch ->
-                val task = dialogView.editText.text.toString()
-                if(task.isNotBlank()){
-                    Toast.makeText(requireContext(), "Task added", Toast.LENGTH_SHORT).show()
-                    dialog.dismiss()
-                }else{
-                    Toast.makeText(requireContext(), "Fields cannot be empty", Toast.LENGTH_SHORT).show()
-                }
-            })
-        val mAlertDialog = mBuilder.show()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

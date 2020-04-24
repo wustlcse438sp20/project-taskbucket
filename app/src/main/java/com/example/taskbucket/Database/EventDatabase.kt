@@ -9,7 +9,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 
 
 // Annotates class to be a Room Database with a table (entity) of the Word class
-@Database(entities = arrayOf(Event::class, Project::class), version = 3, exportSchema = false)
+@Database(entities = arrayOf(Event::class, Project::class), version = 4, exportSchema = false)
 abstract class EventDatabase : RoomDatabase() {
 
 

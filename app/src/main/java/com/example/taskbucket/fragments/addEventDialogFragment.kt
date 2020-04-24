@@ -35,9 +35,17 @@ class addEventDialogFragment : DialogFragment(){
         val eventViewModel: EventViewModel by activityViewModels()
         bttn_adding_send.setOnClickListener {
             if(et_adding_text.text.isNotBlank()){
-                eventViewModel.insert(Event(name = et_adding_text.text.toString(), year = 2020))
-                eventViewModel.getAll()
-                dismiss()
+                if(eventViewModel.addProjectCheck.value == true){
+                    eventViewModel.addProjectCheck.value = false
+                    eventViewModel.insert(Event(name = et_adding_text.text.toString(), year = 2020, project_id = eventViewModel.projectLive.value!!.id))
+                    eventViewModel.getAll()
+                    dismiss()
+                }else{
+                    eventViewModel.insert(Event(name = et_adding_text.text.toString(), year = 2020))
+                    eventViewModel.getAll()
+                    dismiss()
+                }
+
             }
         }
 

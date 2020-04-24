@@ -3,13 +3,11 @@ package com.example.taskbucket.activites
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import android.view.Menu
-import android.view.MenuItem
-import android.view.Window
-import android.view.WindowManager
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.Toolbar
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.view.ActionMode
@@ -17,13 +15,16 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.databasefinal.Event
 import com.example.databasefinal.Project
 import com.example.taskbucket.R
+import com.example.taskbucket.adapters.projectAdapter
 import com.example.taskbucket.viewmodels.EventViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.sidebar.*
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -96,6 +97,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var recyclerView: RecyclerView
     lateinit var imageButton: ImageButton
     lateinit var toolbar: androidx.appcompat.widget.Toolbar
+    lateinit var sidebarImage: ImageView
     private var eventViewModel: EventViewModel? = null
     private var uniqueYears: ArrayList<Int> = ArrayList()
     private var currentEvents: ArrayList<Event> = ArrayList()
@@ -103,6 +105,7 @@ class MainActivity : AppCompatActivity() {
     private var currentProjects: ArrayList<Project> = ArrayList()
     private var lastProjectId : Int = 0
     private var done: Boolean = false
+    val TAG: String = "MainActivity"
     val date = LocalDateTime.now()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -134,10 +137,9 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-
-        eventViewModel = ViewModelProvider(this).get(EventViewModel::class.java)
 //        eventViewModel!!.getYears()
 //        eventViewModel!!.getEventsNoBucket()
+        eventViewModel = ViewModelProvider(this).get(EventViewModel::class.java)
         eventViewModel!!.currentEvents.observe(this, Observer { events ->
             // Update the cached copy of the words in the adapter.
             if(events != null) {

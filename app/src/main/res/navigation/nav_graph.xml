@@ -26,7 +26,11 @@
         android:id="@+id/projectFragment"
         android:name="com.example.taskbucket.fragments.ProjectFragment"
         android:label="fragment_project"
-        tools:layout="@layout/fragment_project" />
+        tools:layout="@layout/fragment_project" >
+        <action
+            android:id="@+id/action_projectFragment_to_addEventDialogFragment"
+            app:destination="@id/addEventDialogFragment" />
+    </fragment>
     <dialog
         android:id="@+id/addEventDialogFragment"
         android:name="com.example.taskbucket.fragments.addEventDialogFragment"
@@ -40,5 +44,9 @@
     <action
         android:id="@+id/action_global_addProjectDialogFragment"
         app:destination="@id/addProjectDialogFragment"
+        app:popUpTo="@id/bucketFragment2" />
+    <action
+        android:id="@+id/action_global_projectFragment"
+        app:destination="@id/projectFragment"
         app:popUpTo="@id/bucketFragment2" />
 </navigation>

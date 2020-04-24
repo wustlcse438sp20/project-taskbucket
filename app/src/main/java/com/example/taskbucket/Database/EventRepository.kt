@@ -45,6 +45,8 @@ class EventRepository(private val eventDao: EventDao) {
 //        }
     }
 
+    fun getEventsByProjectLive(): LiveData<List<Event>> = eventDao.getEventsByProject()
+    fun getAllProjectsLive(): LiveData<List<Project>> = eventDao.getAllProjects()
     fun getAllLive(): LiveData<List<Event>> = eventDao.getAllEvents()
     fun getYearLive(year: Int): LiveData<List<Event>> = eventDao.getEventsByYear(year)
     fun getDayLive(year : Int, month : Int, day : Int): LiveData<List<Event>> = eventDao.getEventsByDay(year, month, day)

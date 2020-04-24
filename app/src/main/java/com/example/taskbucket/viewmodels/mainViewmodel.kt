@@ -30,16 +30,21 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
     val monthEventsLive: LiveData<List<Event>>
     val dayEventsLive: LiveData<List<Event>>
     val weekEventsLive: LiveData<List<Event>>
+    val projectsLive: LiveData<List<Project>>
+    var projectLive: MutableLiveData<Project> = MutableLiveData()
+    var addProjectCheck: MutableLiveData<Boolean> = MutableLiveData()
 
     init {
         val eventsDao = EventDatabase.getDatabase(application).eventDao()
         val calendar = Calendar.getInstance()
         repository = EventRepository(eventsDao)
+        addProjectCheck.value = false
         oldEvents = repository.oldEvents
         currentEvents = repository.currentEvents
         yearList = repository.yearList
         currentProjects = repository.currentProject
         lastID = repository.lastID
+        projectsLive = repository.getAllProjectsLive()
         allEventsLive = repository.getAllLive()
         yearEventsLive = repository.getYearLive(calendar.get(Calendar.YEAR))
         monthEventsLive = repository.getMonthLive(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH))
@@ -115,6 +120,10 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getYears() {
         repository.getYears()
+    }
+
+    fun updateProject(project: Project){
+        projectLive.value = project
     }
 
     fun getAll() {
