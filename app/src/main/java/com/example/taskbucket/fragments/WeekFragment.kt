@@ -175,7 +175,7 @@ class WeekFragment : Fragment() {
     }
 
     fun prevWeek(view: View) {
-        val sdf = SimpleDateFormat("MM-dd-yyyy")
+        val sdf = SimpleDateFormat("MM-dd")
 
 
         firstDate -= 1
@@ -202,7 +202,7 @@ class WeekFragment : Fragment() {
     }
 
     fun nextWeek(view: View) {
-        val sdf = SimpleDateFormat("MM-dd-yyyy")
+        val sdf = SimpleDateFormat("MM-dd")
         firstDate += 1
         if (firstDate == 366){
             cal.add(Calendar.YEAR, 1)
